@@ -15,11 +15,11 @@ The core idea is simple: a DAQ logger records measurement channels, a power-supp
 
 ## Screenshots
 
-These images are sanitized public-facing captures/mockups that show the intended operator surfaces without exposing private paths or live bench state.
+These images show the actual operator GUI surfaces used by the DAQ and TDK logging tools. The earlier SVG mockups are still kept in `docs/assets/readme/` as design/reference assets.
 
-![Keithley DAQ GUI](docs/assets/readme/daq-gui.svg)
+![Keithley DAQ GUI](docs/assets/readme/daq.png)
 
-![TDK Lambda GUI](docs/assets/readme/tdk-gui.svg)
+![TDK Lambda GUI](docs/assets/readme/tdk.png)
 
 ![Synthetic calibration review plot](docs/assets/readme/calibration-plot.svg)
 
