@@ -1,0 +1,10 @@
+matplotlib
+numpy
+pandas
+plotly
+pymeasure
+pyvisa
+requests
+scipy
+seaborn
+streamlit

@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+.ipynb_checkpoints/
+demo_logs/
+*.tmp
+*.log.tmp
+tdklambda/tdkMeasure_gui.csv

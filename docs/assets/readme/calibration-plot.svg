@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640" viewBox="0 0 960 640">
+<rect width="100%" height="100%" fill="white"/>
+<text x="480.0" y="28" text-anchor="middle" font-family="Arial" font-size="20" fill="black">ps_1_current vs DAQ_KEEPER_I</text>
+<text x="480.0" y="50" text-anchor="middle" font-family="Arial" font-size="14" fill="black">y = +0.40000000x +0.01000000; R^2 = 1.000000</text>
+<line x1="86" y1="562" x2="926" y2="562" stroke="black" stroke-width="1.5"/>
+<line x1="86" y1="54" x2="86" y2="562" stroke="black" stroke-width="1.5"/>
+<line x1="86.00" y1="562" x2="86.00" y2="568" stroke="black"/>
+<text x="86.00" y="586" text-anchor="middle" font-family="Arial" font-size="12" fill="black">0.3</text>
+<line x1="254.00" y1="562" x2="254.00" y2="568" stroke="black"/>
+<text x="254.00" y="586" text-anchor="middle" font-family="Arial" font-size="12" fill="black">0.88</text>
+<line x1="422.00" y1="562" x2="422.00" y2="568" stroke="black"/>
+<text x="422.00" y="586" text-anchor="middle" font-family="Arial" font-size="12" fill="black">1.46</text>
+<line x1="590.00" y1="562" x2="590.00" y2="568" stroke="black"/>
+<text x="590.00" y="586" text-anchor="middle" font-family="Arial" font-size="12" fill="black">2.04</text>
+<line x1="758.00" y1="562" x2="758.00" y2="568" stroke="black"/>
+<text x="758.00" y="586" text-anchor="middle" font-family="Arial" font-size="12" fill="black">2.62</text>
+<line x1="926.00" y1="562" x2="926.00" y2="568" stroke="black"/>
+<text x="926.00" y="586" text-anchor="middle" font-family="Arial" font-size="12" fill="black">3.2</text>
+<line x1="80" y1="562.00" x2="86" y2="562.00" stroke="black"/>
+<text x="76" y="566.00" text-anchor="end" font-family="Arial" font-size="12" fill="black">0.13</text>
+<line x1="80" y1="460.40" x2="86" y2="460.40" stroke="black"/>
+<text x="76" y="464.40" text-anchor="end" font-family="Arial" font-size="12" fill="black">0.362</text>
+<line x1="80" y1="358.80" x2="86" y2="358.80" stroke="black"/>
+<text x="76" y="362.80" text-anchor="end" font-family="Arial" font-size="12" fill="black">0.594</text>
+<line x1="80" y1="257.20" x2="86" y2="257.20" stroke="black"/>
+<text x="76" y="261.20" text-anchor="end" font-family="Arial" font-size="12" fill="black">0.826</text>
+<line x1="80" y1="155.60" x2="86" y2="155.60" stroke="black"/>
+<text x="76" y="159.60" text-anchor="end" font-family="Arial" font-size="12" fill="black">1.058</text>
+<line x1="80" y1="54.00" x2="86" y2="54.00" stroke="black"/>
+<text x="76" y="58.00" text-anchor="end" font-family="Arial" font-size="12" fill="black">1.29</text>
+<circle cx="143.93" cy="526.97" r="2.4" fill="#2f6fbb" fill-opacity="0.55"/>
+<circle cx="216.34" cy="483.17" r="2.4" fill="#2f6fbb" fill-opacity="0.55"/>
+<circle cx="288.76" cy="439.38" r="2.4" fill="#2f6fbb" fill-opacity="0.55"/>
+<circle cx="361.17" cy="395.59" r="2.4" fill="#2f6fbb" fill-opacity="0.55"/>
+<circle cx="433.59" cy="351.79" r="2.4" fill="#2f6fbb" fill-opacity="0.55"/>
+<circle cx="506.00" cy="308.00" r="2.4" fill="#2f6fbb" fill-opacity="0.55"/>
+<circle cx="578.41" cy="264.21" r="2.4" fill="#2f6fbb" fill-opacity="0.55"/>
+<circle cx="650.83" cy="220.41" r="2.4" fill="#2f6fbb" fill-opacity="0.55"/>
+<circle cx="723.24" cy="176.62" r="2.4" fill="#2f6fbb" fill-opacity="0.55"/>
+<circle cx="795.66" cy="132.83" r="2.4" fill="#2f6fbb" fill-opacity="0.55"/>
+<circle cx="868.07" cy="89.03" r="2.4" fill="#2f6fbb" fill-opacity="0.55"/>
+<line x1="143.93" y1="526.97" x2="868.07" y2="89.03" stroke="#c73333" stroke-width="3"/>
+<text x="480.0" y="616" text-anchor="middle" font-family="Arial" font-size="15" fill="black">DAQ_KEEPER_I (A)</text>
+<text transform="translate(24 320.0) rotate(-90)" text-anchor="middle" font-family="Arial" font-size="15" fill="black">ps_1_current (A)</text>
+<text x="926" y="622" text-anchor="end" font-family="Arial" font-size="12" fill="black">plotted points: 11 of 11</text>
+</svg>

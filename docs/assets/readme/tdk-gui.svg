@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="560" viewBox="0 0 960 560" role="img" aria-label="Sanitized TDK Lambda GUI screenshot mockup">
+  <rect width="960" height="560" fill="#f7f7f7"/>
+  <rect x="80" y="50" width="800" height="450" rx="10" fill="#ffffff" stroke="#bdbdbd"/>
+  <rect x="80" y="50" width="800" height="44" rx="10" fill="#edf2f7" stroke="#bdbdbd"/>
+  <text x="480" y="78" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" fill="#1f2937">TDK Lambda GUI</text>
+  <text x="130" y="132" font-family="Segoe UI, Arial" font-size="14" fill="#111827">Save Folder:</text>
+  <rect x="300" y="112" width="390" height="30" fill="#ffffff" stroke="#9ca3af"/>
+  <text x="315" y="132" font-family="Consolas, monospace" font-size="13" fill="#374151">tdklambda/data</text>
+  <rect x="710" y="112" width="75" height="30" fill="#eef2ff" stroke="#9ca3af"/>
+  <text x="747" y="132" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" fill="#111827">Choose...</text>
+  <text x="130" y="178" font-family="Segoe UI, Arial" font-size="14" fill="#111827">CSV File Name:</text>
+  <rect x="300" y="158" width="230" height="30" fill="#ffffff" stroke="#9ca3af"/>
+  <text x="315" y="178" font-family="Consolas, monospace" font-size="13" fill="#374151">demo_tdk_run.csv</text>
+  <text x="130" y="224" font-family="Segoe UI, Arial" font-size="14" fill="#111827">VISA Resource:</text>
+  <rect x="300" y="204" width="230" height="30" fill="#ffffff" stroke="#9ca3af"/>
+  <text x="315" y="224" font-family="Consolas, monospace" font-size="13" fill="#374151">ASRL_DEMO::INSTR</text>
+  <text x="560" y="224" font-family="Segoe UI, Arial" font-size="14" fill="#111827">Sample Period:</text>
+  <rect x="675" y="204" width="90" height="30" fill="#ffffff" stroke="#9ca3af"/>
+  <text x="690" y="224" font-family="Consolas, monospace" font-size="13" fill="#374151">0.1</text>
+  <text x="130" y="270" font-family="Segoe UI, Arial" font-size="14" fill="#111827">Mode:</text>
+  <rect x="300" y="250" width="160" height="30" fill="#ffffff" stroke="#9ca3af"/>
+  <text x="315" y="270" font-family="Segoe UI, Arial" font-size="13" fill="#374151">Logging Only</text>
+  <rect x="500" y="257" width="16" height="16" fill="#ffffff" stroke="#6b7280"/>
+  <text x="525" y="270" font-family="Segoe UI, Arial" font-size="14" fill="#111827">HV mode disabled</text>
+  <rect x="130" y="305" width="700" height="100" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="155" y="335" font-family="Segoe UI, Arial" font-size="15" fill="#111827">Manual setpoints (demo values)</text>
+  <text x="155" y="370" font-family="Segoe UI, Arial" font-size="14" fill="#374151">PS1 Voltage</text>
+  <rect x="245" y="350" width="90" height="28" fill="#ffffff" stroke="#9ca3af"/>
+  <text x="260" y="369" font-family="Consolas, monospace" font-size="13" fill="#374151">120.0</text>
+  <text x="365" y="370" font-family="Segoe UI, Arial" font-size="14" fill="#374151">PS1 Current</text>
+  <rect x="455" y="350" width="90" height="28" fill="#ffffff" stroke="#9ca3af"/>
+  <text x="470" y="369" font-family="Consolas, monospace" font-size="13" fill="#374151">0.20</text>
+  <text x="575" y="370" font-family="Segoe UI, Arial" font-size="14" fill="#374151">PS2 Output</text>
+  <rect x="665" y="350" width="90" height="28" fill="#ffffff" stroke="#9ca3af"/>
+  <text x="690" y="369" font-family="Segoe UI, Arial" font-size="13" fill="#374151">OFF</text>
+  <rect x="285" y="430" width="110" height="34" rx="4" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="340" y="452" text-anchor="middle" font-family="Segoe UI, Arial" font-size="15" fill="#14532d">Start</text>
+  <rect x="425" y="430" width="110" height="34" rx="4" fill="#fee2e2" stroke="#dc2626"/>
+  <text x="480" y="452" text-anchor="middle" font-family="Segoe UI, Arial" font-size="15" fill="#7f1d1d">Stop</text>
+  <text x="130" y="485" font-family="Segoe UI, Arial" font-size="13" fill="#4b5563">Status: Idle. Hardware outputs remain unchanged in logging-only mode.</text>
+</svg>

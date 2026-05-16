@@ -1,0 +1,50 @@
+{
+  "name": "demo_keeper_current_linear",
+  "created_at_utc": "2026-05-16T17:54:58.621849+00:00",
+  "source": {
+    "original_file": "examples/synthetic_merged_session.csv",
+    "original_raw_snapshot_csv": "raw_sources/synthetic_merged_session.csv",
+    "original_raw_snapshot_sha256": "34bbf811836e65ab6719bb12d2a14e53253140e2542ae425a1673a0153752df8",
+    "curated_source_csv": "curated_sources/synthetic_calibration_source.csv",
+    "curated_source_sha256": "66a52b91d6065f6bf968a6de03198c92e193074d23cdf8e65fab1405272c4324",
+    "input_column": "DAQ_KEEPER_I",
+    "input_units": "A",
+    "reference_column": "ps_1_current",
+    "reference_units": "A"
+  },
+  "model": {
+    "type": "linear",
+    "equation": "reference = slope * input + intercept",
+    "slope": 0.4,
+    "intercept": 0.010000000000000009
+  },
+  "quality": {
+    "r_squared": 1.0,
+    "rmse": 8.57528465810393e-17,
+    "sample_count": 11,
+    "input_valid_min": 0.5,
+    "input_valid_max": 3.0,
+    "reference_min": 0.21,
+    "reference_max": 1.21
+  },
+  "cleaning": {
+    "total_rows": 11,
+    "used_rows": 11,
+    "dropped_rows": 0,
+    "dropped_reasons": {
+      "invalid_input_column": 0,
+      "invalid_reference_column": 0
+    },
+    "cleaning_rules": [
+      "Keep rows where DAQ_KEEPER_I is finite and numeric.",
+      "Keep rows where ps_1_current is finite and numeric."
+    ]
+  },
+  "artifacts": {
+    "raw_snapshot_csv": "raw_sources/synthetic_merged_session.csv",
+    "curated_source_csv": "curated_sources/synthetic_calibration_source.csv",
+    "cleaned_csv": "artifacts/demo_keeper_current_linear.cleaned.csv",
+    "rejected_csv": "artifacts/demo_keeper_current_linear.rejected.csv",
+    "review_plot": "artifacts/plots/demo_keeper_current_linear.svg"
+  }
+}

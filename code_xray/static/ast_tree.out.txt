@@ -1,0 +1,497 @@
+source: <repo>\code_xray\DAQ2700.py
+seed variable for ancestry tree: readings
+
+==============================================================================
+ANCESTRY TREE rooted at `readings` (depth<= 6)
+==============================================================================
+
+readings   (L157, assign, list[str])
+    := data.split(',')
+    data   (L151, assign, str)
+        := k2700.ask('READ?').strip()
+        k2700   (L49, assign, call -> Keithley2700(...))
+            := Keithley2700(adapter)
+            Keithley2700   [external / not defined in this file]
+            adapter   (L47, assign, call -> VISAAdapter(...))
+                := VISAAdapter('GPIB::'+GPIB)
+                GPIB   (L27, param, parameter)
+                    := param of DAQ2700()
+                VISAAdapter   [external / not defined in this file]
+            adapter   (L48, assign, float)
+                := 5e3
+
+==============================================================================
+VARIABLE INDEX  (every name -> its defs and uses)
+==============================================================================
+
+## Exception
+  uses (1):
+    L 235  except Exception as e:
+
+## GPIB
+  defs:
+    L  27  [   param]  type? parameter
+           RHS: param of DAQ2700()
+  uses (1):
+    L  47  adapter = VISAAdapter('GPIB::'+GPIB)
+
+## Keithley2700
+  uses (1):
+    L  49  k2700 = Keithley2700(adapter)
+
+## KeyboardInterrupt
+  uses (1):
+    L 225  except KeyboardInterrupt:
+
+## MERGED_FIELDS
+  uses (2):
+    L 138  merged_header = daq_header + MERGED_FIELDS
+    L 185  for field in MERGED_FIELDS:
+
+## PROJECT_ROOT
+  defs:
+    L   9  [  assign]  type? call -> abspath(...)
+           RHS: os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+           depends on: __file__, os
+  uses (3):
+    L  10  if PROJECT_ROOT not in sys.path:
+    L  11  sys.path.insert(0, PROJECT_ROOT)
+    L 140  tdk_snapshot_path = os.path.join(PROJECT_ROOT, "tdk_snapshot.json")
+
+## RuntimeError
+  uses (1):
+    L 124  raise RuntimeError("Keithley setup errors: " + " | ".join(setup_errors))
+
+## TDK_MAX_AGE_S
+  defs:
+    L  24  [  assign]  type? float
+           RHS: 1.2
+  uses (1):
+    L 180  TDK_MAX_AGE_S,
+
+## TDK_MISSING_AGE_S
+  defs:
+    L  25  [  assign]  type? float
+           RHS: 3.6
+  uses (1):
+    L 181  TDK_MISSING_AGE_S,
+
+## TypeError
+  uses (1):
+    L 203  except (TypeError, ValueError):
+
+## VISAAdapter
+  uses (1):
+    L  47  adapter = VISAAdapter('GPIB::'+GPIB)
+
+## ValueError
+  uses (2):
+    L  42  raise ValueError("No channels provided for DAQ2700 scan.")
+    L 203  except (TypeError, ValueError):
+
+## __file__
+  uses (2):
+    L  29  print("DAQ2700 module file:", __file__)
+    L   9  PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+## adapter
+  defs:
+    L  47  [  assign]  type? call -> VISAAdapter(...)
+           RHS: VISAAdapter('GPIB::'+GPIB)
+           depends on: GPIB, VISAAdapter
+    L  48  [  assign]  type? float
+           RHS: 5e3
+  uses (2):
+    L  49  k2700 = Keithley2700(adapter)
+    L  48  adapter.connection.timeout = 5e3  # Set to 5 second (1000 ms)
+
+## channels
+  defs:
+    L  27  [   param]  type? parameter
+           RHS: param of DAQ2700()
+    L  40  [  assign]  type? dict (comprehension)
+           RHS: { k.strip():v.strip() for k, v in channels.items()}
+           depends on: channels, k, v
+  uses (9):
+    L  41  if not channels:
+    L  99  scan_channels = ','.join(channels.values())
+    L  40  channels = { k.strip():v.strip() for k, v in channels.items()}
+    L 110  k2700.write(f'SAMP:COUN {len(channels)}')
+    L 137  daq_header = ['Timestamp'] + list(channels.keys())
+    L 160  expected_count = len(channels.keys())
+    L 194  if len(readings) == len(channels.keys()):
+    L 213  f"{timestamp}: Expected {len(channels)} readings, "
+    L 206  ', '.join(f'{key}:{readings[index]}' for index, key in enumerate(channels.keys())) +
+
+## compute_freshness
+  uses (1):
+    L 177  tdk_age_s, tdk_status = compute_freshness(
+
+## csv
+  uses (1):
+    L 134  writer = csv.writer(csvfile)
+
+## csv_title
+  defs:
+    L  27  [   param]  type? parameter
+           RHS: param of DAQ2700()
+  uses (1):
+    L 133  with open(csv_title, 'w', newline='') as csvfile:
+
+## csvfile
+  uses (1):
+    L 134  writer = csv.writer(csvfile)
+
+## daq_header
+  defs:
+    L 137  [  assign]  type? expr (BinOp)
+           RHS: ['Timestamp'] + list(channels.keys())
+           depends on: channels, list
+  uses (1):
+    L 138  merged_header = daq_header + MERGED_FIELDS
+
+## data
+  defs:
+    L 151  [  assign]  type? str
+           RHS: k2700.ask('READ?').strip()
+           depends on: k2700
+  uses (1):
+    L 157  readings = data.split(',')
+
+## e
+  uses (1):
+    L 236  print("Error during instrument shutdown:", e)
+
+## enumerate
+  uses (1):
+    L 206  ', '.join(f'{key}:{readings[index]}' for index, key in enumerate(channels.keys())) +
+
+## err
+  defs:
+    L 118  [  assign]  type? str
+           RHS: k2700.ask('SYST:ERR?').strip()
+           depends on: k2700
+  uses (2):
+    L 121  setup_errors.append(err)
+    L 119  if err.startswith('0'):
+
+## expected_count
+  defs:
+    L 160  [  assign]  type? call -> len(...)
+           RHS: len(channels.keys())
+           depends on: channels, len
+  uses (3):
+    L 163  if len(normalized_readings) < expected_count:
+    L 161  normalized_readings = readings[:expected_count]
+    L 164  normalized_readings.extend([""] * (expected_count - len(normalized_readings)))
+
+## extract_tdk_columns
+  uses (1):
+    L 183  extracted_data = extract_tdk_columns(snapshot, tdk_age_s, tdk_status)
+
+## extracted_data
+  defs:
+    L 183  [  assign]  type? dict
+           RHS: extract_tdk_columns(snapshot, tdk_age_s, tdk_status)
+           depends on: extract_tdk_columns, snapshot, tdk_age_s, tdk_status
+  uses (4):
+    L 186  value = extracted_data.get(field, "")
+    L 197  tdk_age_live = extracted_data.get("tdk_age_s", "")
+    L 196  tdk_status_live = str(extracted_data.get("tdk_status", "missing"))
+    L 215  f"| TDK status:{extracted_data.get('tdk_status', 'missing')}"
+
+## field
+  defs:
+    L 185  [     for]  type? loop var
+           RHS: MERGED_FIELDS
+           depends on: MERGED_FIELDS
+  uses (1):
+    L 186  value = extracted_data.get(field, "")
+
+## float
+  uses (1):
+    L 202  tdk_age_text = f"{float(tdk_age_live):.3f}s"
+
+## index
+  uses (1):
+    L 206  ', '.join(f'{key}:{readings[index]}' for index, key in enumerate(channels.keys())) +
+
+## k
+  uses (1):
+    L  40  channels = { k.strip():v.strip() for k, v in channels.items()}
+
+## k2700
+  defs:
+    L  49  [  assign]  type? call -> Keithley2700(...)
+           RHS: Keithley2700(adapter)
+           depends on: Keithley2700, adapter
+  uses (27):
+    L  93  k2700.write('SYST:PRES')
+    L  94  k2700.write('*CLS')
+    L  95  k2700.write('TRAC:CLE')
+    L  96  k2700.write('INIT:CONT OFF')
+    L  97  k2700.write('ABOR')
+    L 103  k2700.write(f"FUNC 'VOLT',(@{scan_channels})")
+    L 104  k2700.write(f'VOLT:DC:RANG:AUTO OFF,(@{scan_channels})')
+    L 105  k2700.write(f'VOLT:DC:RANG 1000,(@{scan_channels})')
+    L 107  k2700.write(scan_text)
+    L 108  k2700.write('TRIG:SOUR IMM')
+    L 109  k2700.write('TRIG:COUN 1')
+    L 110  k2700.write(f'SAMP:COUN {len(channels)}')
+    … 15 more
+
+## key
+  uses (1):
+    L 206  ', '.join(f'{key}:{readings[index]}' for index, key in enumerate(channels.keys())) +
+
+## len
+  uses (8):
+    L 110  k2700.write(f'SAMP:COUN {len(channels)}')
+    L 160  expected_count = len(channels.keys())
+    L 163  if len(normalized_readings) < expected_count:
+    L 194  if len(readings) == len(channels.keys()):
+    L 194  if len(readings) == len(channels.keys()):
+    L 164  normalized_readings.extend([""] * (expected_count - len(normalized_readings)))
+    L 213  f"{timestamp}: Expected {len(channels)} readings, "
+    L 214  f"got {len(readings)} -> {readings} "
+
+## list
+  uses (1):
+    L 137  daq_header = ['Timestamp'] + list(channels.keys())
+
+## merged_header
+  defs:
+    L 138  [  assign]  type? expr (BinOp)
+           RHS: daq_header + MERGED_FIELDS
+           depends on: MERGED_FIELDS, daq_header
+  uses (1):
+    L 139  writer.writerow(merged_header)
+
+## merged_tdk_values
+  defs:
+    L 184  [  assign]  type? list (literal)
+           RHS: []
+  uses (2):
+    L 192  writer.writerow([timestamp] + normalized_readings + merged_tdk_values)
+    L 187  merged_tdk_values.append("" if value is None else value)
+
+## normalized_readings
+  defs:
+    L 161  [  assign]  type? subscript []
+           RHS: readings[:expected_count]
+           depends on: expected_count, readings
+  uses (4):
+    L 163  if len(normalized_readings) < expected_count:
+    L 164  normalized_readings.extend([""] * (expected_count - len(normalized_readings)))
+    L 192  writer.writerow([timestamp] + normalized_readings + merged_tdk_values)
+    L 164  normalized_readings.extend([""] * (expected_count - len(normalized_readings)))
+
+## open
+  uses (1):
+    L 133  with open(csv_title, 'w', newline='') as csvfile:
+
+## os
+  uses (5):
+    L   9  PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    L   9  PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    L  28  print("DAQ2700 function PID:", os.getpid())
+    L   9  PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    L 140  tdk_snapshot_path = os.path.join(PROJECT_ROOT, "tdk_snapshot.json")
+
+## print
+  uses (17):
+    L  28  print("DAQ2700 function PID:", os.getpid())
+    L  29  print("DAQ2700 module file:", __file__)
+    L  39  print("Started DAQ2700")
+    L 126  print("Configured scan list:", k2700.ask('ROUT:SCAN?').strip())
+    L 127  print("Configured SAMP:COUN:", k2700.ask('SAMP:COUN?').strip())
+    L 128  print("Configured TRIG:COUN:", k2700.ask('TRIG:COUN?').strip())
+    L 141  print("TDK snapshot path:", tdk_snapshot_path)
+    L 143  print("Starting continuous scan...")
+    L 229  print("DAQ2700 exiting.")
+    L 238  print("Keithley disconnected.")
+    L 226  print("Scan stopped by user.")
+    L 147  print("Stop signal received. Ending scan.")
+    … 5 more
+
+## pyvisa
+  uses (1):
+    L 152  except pyvisa.errors.VisaIOError as timeout_exc:
+
+## read_snapshot
+  uses (1):
+    L 169  snapshot = read_snapshot(tdk_snapshot_path)
+
+## readings
+  defs:
+    L 157  [  assign]  type? list[str]
+           RHS: data.split(',')
+           depends on: data
+  uses (5):
+    L 161  normalized_readings = readings[:expected_count]
+    L 194  if len(readings) == len(channels.keys()):
+    L 214  f"got {len(readings)} -> {readings} "
+    L 214  f"got {len(readings)} -> {readings} "
+    L 206  ', '.join(f'{key}:{readings[index]}' for index, key in enumerate(channels.keys())) +
+
+## runtime_err
+  defs:
+    L 217  [  assign]  type? str
+           RHS: k2700.ask('SYST:ERR?').strip()
+           depends on: k2700
+  uses (2):
+    L 219  print("Keithley runtime error:", runtime_err)
+    L 218  if not runtime_err.startswith('0'):
+
+## scan_channels
+  defs:
+    L  99  [  assign]  type? call -> join(...)
+           RHS: ','.join(channels.values())
+           depends on: channels
+  uses (4):
+    L 100  scan_text = f'ROUT:SCAN (@{scan_channels})'
+    L 103  k2700.write(f"FUNC 'VOLT',(@{scan_channels})")
+    L 104  k2700.write(f'VOLT:DC:RANG:AUTO OFF,(@{scan_channels})')
+    L 105  k2700.write(f'VOLT:DC:RANG 1000,(@{scan_channels})')
+
+## scan_text
+  defs:
+    L 100  [  assign]  type? str (f-string)
+           RHS: f'ROUT:SCAN (@{scan_channels})'
+           depends on: scan_channels
+  uses (1):
+    L 107  k2700.write(scan_text)
+
+## setup_errors
+  defs:
+    L 116  [  assign]  type? list (literal)
+           RHS: []
+  uses (3):
+    L 123  if setup_errors:
+    L 121  setup_errors.append(err)
+    L 124  raise RuntimeError("Keithley setup errors: " + " | ".join(setup_errors))
+
+## snapshot
+  defs:
+    L 169  [  assign]  type? dict | None
+           RHS: read_snapshot(tdk_snapshot_path)
+           depends on: read_snapshot, tdk_snapshot_path
+  uses (2):
+    L 178  snapshot,
+    L 183  extracted_data = extract_tdk_columns(snapshot, tdk_age_s, tdk_status)
+
+## stop_event
+  defs:
+    L  27  [   param]  type? parameter
+           RHS: param of DAQ2700()
+  uses (2):
+    L 146  if stop_event is not None and stop_event.is_set():
+    L 146  if stop_event is not None and stop_event.is_set():
+
+## str
+  uses (2):
+    L 196  tdk_status_live = str(extracted_data.get("tdk_status", "missing"))
+    L 204  tdk_age_text = str(tdk_age_live)
+
+## sys
+  uses (2):
+    L  10  if PROJECT_ROOT not in sys.path:
+    L  11  sys.path.insert(0, PROJECT_ROOT)
+
+## tdk_age_live
+  defs:
+    L 197  [  assign]  type? any (dict.get)
+           RHS: extracted_data.get("tdk_age_s", "")
+           depends on: extracted_data
+  uses (3):
+    L 198  if tdk_age_live in ("", None):
+    L 204  tdk_age_text = str(tdk_age_live)
+    L 202  tdk_age_text = f"{float(tdk_age_live):.3f}s"
+
+## tdk_age_s
+  defs:
+    L 177  [  assign]  type? tuple(age, status)
+           RHS: compute_freshness( snapshot, timestamp, TDK_MAX_AGE_S, TDK_MISSING_AGE_S, )
+           depends on: TDK_MAX_AGE_S, TDK_MISSING_AGE_S, compute_freshness, snapshot, timestamp
+  uses (1):
+    L 183  extracted_data = extract_tdk_columns(snapshot, tdk_age_s, tdk_status)
+
+## tdk_age_text
+  defs:
+    L 199  [  assign]  type? str
+           RHS: "NA"
+    L 202  [  assign]  type? str (f-string)
+           RHS: f"{float(tdk_age_live):.3f}s"
+           depends on: float, tdk_age_live
+    L 204  [  assign]  type? str
+           RHS: str(tdk_age_live)
+           depends on: str, tdk_age_live
+  uses (1):
+    L 207  f" | TDK status:{tdk_status_live} age:{tdk_age_text}"
+
+## tdk_snapshot_path
+  defs:
+    L 140  [  assign]  type? call -> join(...)
+           RHS: os.path.join(PROJECT_ROOT, "tdk_snapshot.json")
+           depends on: PROJECT_ROOT, os
+  uses (2):
+    L 141  print("TDK snapshot path:", tdk_snapshot_path)
+    L 169  snapshot = read_snapshot(tdk_snapshot_path)
+
+## tdk_status
+  defs:
+    L 177  [  assign]  type? tuple(age, status)
+           RHS: compute_freshness( snapshot, timestamp, TDK_MAX_AGE_S, TDK_MISSING_AGE_S, )
+           depends on: TDK_MAX_AGE_S, TDK_MISSING_AGE_S, compute_freshness, snapshot, timestamp
+  uses (1):
+    L 183  extracted_data = extract_tdk_columns(snapshot, tdk_age_s, tdk_status)
+
+## tdk_status_live
+  defs:
+    L 196  [  assign]  type? str
+           RHS: str(extracted_data.get("tdk_status", "missing"))
+           depends on: extracted_data, str
+  uses (1):
+    L 207  f" | TDK status:{tdk_status_live} age:{tdk_age_text}"
+
+## time
+  uses (1):
+    L 159  timestamp = time.time()  # Or use time.strftime('%Y-%m-%d %H:%M:%S') for human-readable
+
+## timeout_exc
+  uses (1):
+    L 153  print(f"Timeout during READ?: {timeout_exc}")
+
+## timestamp
+  defs:
+    L 159  [  assign]  type? call -> time(...)
+           RHS: time.time()
+           depends on: time
+  uses (4):
+    L 179  timestamp,
+    L 192  writer.writerow([timestamp] + normalized_readings + merged_tdk_values)
+    L 213  f"{timestamp}: Expected {len(channels)} readings, "
+    L 205  print(f"{timestamp}:"+
+
+## v
+  uses (1):
+    L  40  channels = { k.strip():v.strip() for k, v in channels.items()}
+
+## value
+  defs:
+    L 186  [  assign]  type? any (dict.get)
+           RHS: extracted_data.get(field, "")
+           depends on: extracted_data, field
+  uses (2):
+    L 187  merged_tdk_values.append("" if value is None else value)
+    L 187  merged_tdk_values.append("" if value is None else value)
+
+## writer
+  defs:
+    L 134  [  assign]  type? call -> writer(...)
+           RHS: csv.writer(csvfile)
+           depends on: csv, csvfile
+  uses (2):
+    L 139  writer.writerow(merged_header)
+    L 192  writer.writerow([timestamp] + normalized_readings + merged_tdk_values)
+

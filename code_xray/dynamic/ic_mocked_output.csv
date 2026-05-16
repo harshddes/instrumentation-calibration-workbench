@@ -1,0 +1,3 @@
+Timestamp,ch1,ch2,ps_1_voltage,ps_1_current,ps_1_output_state,ps_2_voltage,ps_2_current,ps_2_output_state,tdk_timestamp,tdk_age_s,tdk_status,voltage_sum
+1776861012.3863764,0.124400,0.046600,12.3,0.56,ON,5.0,0.22,OFF,1776861012.0863786,0.29999780654907227,fresh,17.3
+1776861012.387977,0.125400,0.047600,12.3,0.56,ON,5.0,0.22,OFF,1776861012.0879786,0.29999828338623047,fresh,17.3

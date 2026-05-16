@@ -1,0 +1,119 @@
+ic| "pre-run": 'pre-run'
+    csv_path: 'Z:\\University of Michigan Dropbox\\Harsh Desai\\SPRL\\Omar\\SCD1.2\\code_xray\\dynamic\\ic_mocked_output.csv'
+ic| 'READ?', type(result).__name__: 'str', result: '0.124400,0.046600'
+ic| attr: 'read_snapshot'
+    args: ('Z:\\University of Michigan Dropbox\\Harsh '
+           'Desai\\SPRL\\Omar\\SCD1.2\\tdk_snapshot.json',)
+    kwargs: {}
+    type(result).__name__: 'dict'
+    result: {'fields': {'ps_1_current': 0.56,
+                        'ps_1_output_state': 'ON',
+                        'ps_1_voltage': 12.3,
+                        'ps_2_current': 0.22,
+                        'ps_2_output_state': 'OFF',
+                        'ps_2_voltage': 5.0},
+             'id': 1.0,
+             'published_at': 1776861012.0863788,
+             'sequence': 1,
+             'timestamp': 1776861012.0863786}
+ic| attr: 'compute_freshness'
+    args: ({'fields': {'ps_1_current': 0.56,
+                       'ps_1_output_state': 'ON',
+                       'ps_1_voltage': 12.3,
+                       'ps_2_current': 0.22,
+                       'ps_2_output_state': 'OFF',
+                       'ps_2_voltage': 5.0},
+            'id': 1.0,
+            'published_at': 1776861012.0863788,
+            'sequence': 1,
+            'timestamp': 1776861012.0863786},
+           1776861012.3863764,
+           1.2,
+           3.6)
+    kwargs: {}
+    type(result).__name__: 'tuple'
+    result: (0.29999780654907227, 'fresh')
+ic| attr: 'extract_tdk_columns'
+    args: ({'fields': {'ps_1_current': 0.56,
+                       'ps_1_output_state': 'ON',
+                       'ps_1_voltage': 12.3,
+                       'ps_2_current': 0.22,
+                       'ps_2_output_state': 'OFF',
+                       'ps_2_voltage': 5.0},
+            'id': 1.0,
+            'published_at': 1776861012.0863788,
+            'sequence': 1,
+            'timestamp': 1776861012.0863786},
+           0.29999780654907227,
+           'fresh')
+    kwargs: {}
+    type(result).__name__: 'dict'
+    result: {'ps_1_current': 0.56,
+             'ps_1_output_state': 'ON',
+             'ps_1_voltage': 12.3,
+             'ps_2_current': 0.22,
+             'ps_2_output_state': 'OFF',
+             'ps_2_voltage': 5.0,
+             'tdk_age_s': 0.29999780654907227,
+             'tdk_status': 'fresh',
+             'tdk_timestamp': 1776861012.0863786,
+             'voltage_sum': 17.3}
+ic| 'READ?', type(result).__name__: 'str', result: '0.125400,0.047600'
+ic| attr: 'read_snapshot'
+    args: ('Z:\\University of Michigan Dropbox\\Harsh '
+           'Desai\\SPRL\\Omar\\SCD1.2\\tdk_snapshot.json',)
+    kwargs: {}
+    type(result).__name__: 'dict'
+    result: {'fields': {'ps_1_current': 0.56,
+                        'ps_1_output_state': 'ON',
+                        'ps_1_voltage': 12.3,
+                        'ps_2_current': 0.22,
+                        'ps_2_output_state': 'OFF',
+                        'ps_2_voltage': 5.0},
+             'id': 1.0,
+             'published_at': 1776861012.0879788,
+             'sequence': 1,
+             'timestamp': 1776861012.0879786}
+ic| attr: 'compute_freshness'
+    args: ({'fields': {'ps_1_current': 0.56,
+                       'ps_1_output_state': 'ON',
+                       'ps_1_voltage': 12.3,
+                       'ps_2_current': 0.22,
+                       'ps_2_output_state': 'OFF',
+                       'ps_2_voltage': 5.0},
+            'id': 1.0,
+            'published_at': 1776861012.0879788,
+            'sequence': 1,
+            'timestamp': 1776861012.0879786},
+           1776861012.387977,
+           1.2,
+           3.6)
+    kwargs: {}
+    type(result).__name__: 'tuple'
+    result: (0.29999828338623047, 'fresh')
+ic| attr: 'extract_tdk_columns'
+    args: ({'fields': {'ps_1_current': 0.56,
+                       'ps_1_output_state': 'ON',
+                       'ps_1_voltage': 12.3,
+                       'ps_2_current': 0.22,
+                       'ps_2_output_state': 'OFF',
+                       'ps_2_voltage': 5.0},
+            'id': 1.0,
+            'published_at': 1776861012.0879788,
+            'sequence': 1,
+            'timestamp': 1776861012.0879786},
+           0.29999828338623047,
+           'fresh')
+    kwargs: {}
+    type(result).__name__: 'dict'
+    result: {'ps_1_current': 0.56,
+             'ps_1_output_state': 'ON',
+             'ps_1_voltage': 12.3,
+             'ps_2_current': 0.22,
+             'ps_2_output_state': 'OFF',
+             'ps_2_voltage': 5.0,
+             'tdk_age_s': 0.29999828338623047,
+             'tdk_status': 'fresh',
+             'tdk_timestamp': 1776861012.0879786,
+             'voltage_sum': 17.3}
+ic| 'post-run'

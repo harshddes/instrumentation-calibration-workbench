@@ -1,0 +1,14 @@
+{
+    "id": 1.0,
+    "timestamp": 1778278351.926261,
+    "sequence": 14,
+    "published_at": 1778278352.6999054,
+    "fields": {
+        "ps_1_voltage": "450.003",
+        "ps_1_current": "0.00000",
+        "ps_1_output_state": "ON",
+        "ps_2_voltage": "450.00",
+        "ps_2_current": "0.0000",
+        "ps_2_output_state": "ON"
+    }
+}

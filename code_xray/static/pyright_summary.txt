@@ -1,0 +1,4 @@
+﻿<repo>\code_xray\DAQ2700.py
+  <repo>\code_xray\DAQ2700.py:48:24 - error: Cannot assign to attribute "timeout" for class "ProtocolAdapter"
+  ┬á┬áAttribute "timeout" is unknown (reportAttributeAccessIssue)
+1 error, 0 warnings, 0 informations

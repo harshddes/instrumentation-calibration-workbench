@@ -1,0 +1,5 @@
+timestamp,ps_1_voltage,ps_1_current,ps_1_output_state,ps_1_oper_cond,ps_1_oper_flags,ps_1_ques_cond,ps_1_fault_flags,ps_1_status_byte,ps_1_errors,ps_2_voltage,ps_2_current,ps_2_output_state,ps_2_oper_cond,ps_2_oper_flags,ps_2_ques_cond,ps_2_fault_flags,ps_2_status_byte,ps_2_errors
+1778278269.484512,229.702,0.00000,ON,5,"CV_MODE,NO_FAULT",0,NONE,0,,450.00,0.0000,ON,5,"CV_MODE,NO_FAULT",0,NONE,0,
+1778278270.4509652,450.003,0.00000,ON,5,"CV_MODE,NO_FAULT",0,NONE,0,,450.00,0.0000,ON,5,"CV_MODE,NO_FAULT",0,NONE,0,
+1778278271.0710948,450.003,0.00000,ON,5,"CV_MODE,NO_FAULT",0,NONE,0,,450.00,0.0000,ON,5,"CV_MODE,NO_FAULT",0,NONE,0,
+1778278271.9975083,450.003,0.00000,ON,5,"CV_MODE,NO_FAULT",0,NONE,0,,450.00,0.0000,ON,5,"CV_MODE,NO_FAULT",0,NONE,0,

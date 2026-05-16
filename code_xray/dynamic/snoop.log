@@ -1,0 +1,341 @@
+08:29:41.43 >>> Call to DAQ2700 in File "Z:\University of Michigan Dropbox\Harsh Desai\SPRL\Omar\SCD1.2\code_xray\DAQ2700.py", line 27
+08:29:41.43 ...... csv_title = 'Z:\\University of Michigan Dropbox\\Harsh Desai\\SP...\\SCD1.2\\code_xray\\dynamic\\snoop_mocked_output.csv'
+08:29:41.43 ...... len(csv_title) = 104
+08:29:41.43 ...... channels = {'ch1': '101', 'ch2': '102'}
+08:29:41.43 ...... len(channels) = 2
+08:29:41.43 ...... GPIB = '27'
+08:29:41.43 ...... stop_event = <DAQ2700_mocked.BoundedStopEvent object at 0x0000022FEA111010>
+08:29:41.43 ...... channels['ch1'] = '101'
+08:29:41.43 ...... channels['ch2'] = '102'
+08:29:41.43   27 | def DAQ2700 (csv_title,channels={},GPIB = "27", stop_event=None):
+08:29:41.43   28 |     print("DAQ2700 function PID:", os.getpid())
+08:29:41.43   29 |     print("DAQ2700 module file:", __file__)
+08:29:41.43   30 |     '''
+08:29:41.43   39 |     print("Started DAQ2700")
+08:29:41.43   40 |     channels = { k.strip():v.strip() for k, v in channels.items()}
+08:29:41.43 .......... k = 'ch1'
+08:29:41.43 .......... v = '101'
+08:29:41.43   40 |     channels = { k.strip():v.strip() for k, v in channels.items()}
+08:29:41.44 .......... k = 'ch2'
+08:29:41.44 .......... v = '102'
+08:29:41.44   40 |     channels = { k.strip():v.strip() for k, v in channels.items()}
+08:29:41.44   41 |     if not channels:
+08:29:41.44   47 |     adapter = VISAAdapter('GPIB::'+GPIB)
+08:29:41.44 .......... adapter = <DAQ2700_mocked._FakeVISAAdapter object at 0x0000022FEA111400>
+08:29:41.44   48 |     adapter.connection.timeout = 5e3  # Set to 5 second (1000 ms)
+08:29:41.44   49 |     k2700 = Keithley2700(adapter)
+08:29:41.44 .......... k2700 = <DAQ2700_mocked._FakeKeithley2700 object at 0x0000022FEA1116A0>
+08:29:41.44   93 |     k2700.write('SYST:PRES')
+08:29:41.44   94 |     k2700.write('*CLS')
+08:29:41.44   95 |     k2700.write('TRAC:CLE')
+08:29:41.44   96 |     k2700.write('INIT:CONT OFF')
+08:29:41.44   97 |     k2700.write('ABOR')
+08:29:41.44   99 |     scan_channels = ','.join(channels.values())
+08:29:41.44 .......... scan_channels = '101,102'
+08:29:41.44  100 |     scan_text = f'ROUT:SCAN (@{scan_channels})'
+08:29:41.44 .......... scan_text = 'ROUT:SCAN (@101,102)'
+08:29:41.44  103 |     k2700.write(f"FUNC 'VOLT',(@{scan_channels})")
+08:29:41.44  104 |     k2700.write(f'VOLT:DC:RANG:AUTO OFF,(@{scan_channels})')
+08:29:41.44  105 |     k2700.write(f'VOLT:DC:RANG 1000,(@{scan_channels})')
+08:29:41.44  107 |     k2700.write(scan_text)
+08:29:41.44  108 |     k2700.write('TRIG:SOUR IMM')
+08:29:41.44  109 |     k2700.write('TRIG:COUN 1')
+08:29:41.44  110 |     k2700.write(f'SAMP:COUN {len(channels)}')
+08:29:41.44  111 |     k2700.write('FORM:ELEM READ')
+08:29:41.44  112 |     k2700.write('ROUT:SCAN:TSO IMM')
+08:29:41.44  113 |     k2700.write('ROUT:SCAN:LSEL INT')
+08:29:41.44  116 |     setup_errors = []
+08:29:41.44  117 |     while True:
+08:29:41.44  118 |         err = k2700.ask('SYST:ERR?').strip()
+08:29:41.44 .............. err = '0,"No error"'
+08:29:41.44  119 |         if err.startswith('0'):
+08:29:41.44  120 |             break
+08:29:41.44  123 |     if setup_errors:
+08:29:41.44  126 |     print("Configured scan list:", k2700.ask('ROUT:SCAN?').strip())
+08:29:41.44  127 |     print("Configured SAMP:COUN:", k2700.ask('SAMP:COUN?').strip())
+08:29:41.44  128 |     print("Configured TRIG:COUN:", k2700.ask('TRIG:COUN?').strip())
+08:29:41.44  133 |     with open(csv_title, 'w', newline='') as csvfile:
+08:29:41.44 .......... csvfile = <_io.TextIOWrapper name='Z:\\University of Michi...op_mocked_output.csv' mode='w' encoding='cp1252'>
+08:29:41.44  134 |         writer = csv.writer(csvfile)
+08:29:41.44 .............. writer = <_csv.writer object at 0x0000022FEA1AA380>
+08:29:41.44  137 |         daq_header = ['Timestamp'] + list(channels.keys())
+08:29:41.45 .............. daq_header = ['Timestamp', 'ch1', 'ch2']
+08:29:41.45 .............. len(daq_header) = 3
+08:29:41.45  138 |         merged_header = daq_header + MERGED_FIELDS
+08:29:41.45 .............. merged_header = ['Timestamp', 'ch1', 'ch2', 'ps_1_voltage', ..., 'tdk_timestamp', 'tdk_age_s', 'tdk_status', 'voltage_sum']
+08:29:41.45 .............. len(merged_header) = 13
+08:29:41.45  139 |         writer.writerow(merged_header)
+08:29:41.45  140 |         tdk_snapshot_path = os.path.join(PROJECT_ROOT, "tdk_snapshot.json")
+08:29:41.45 .............. tdk_snapshot_path = 'Z:\\University of Michigan Dropbox\\Harsh Desai\\SPRL\\Omar\\SCD1.2\\tdk_snapshot.json'
+08:29:41.45 .............. len(tdk_snapshot_path) = 80
+08:29:41.45  141 |         print("TDK snapshot path:", tdk_snapshot_path)
+08:29:41.45  143 |         print("Starting continuous scan...")
+08:29:41.45  144 |         try:
+08:29:41.45  145 |             while True:
+08:29:41.45  146 |                 if stop_event is not None and stop_event.is_set():
+08:29:41.45  150 |                 try:
+08:29:41.45  151 |                     data = k2700.ask('READ?').strip() # This triggers scan and returns readings
+08:29:41.45 .......................... data = '0.124400,0.046600'
+08:29:41.45  157 |                 readings = data.split(',')
+08:29:41.45 ...................... readings = ['0.124400', '0.046600']
+08:29:41.45 ...................... len(readings) = 2
+08:29:41.45 ...................... readings[0] = '0.124400'
+08:29:41.45 ...................... readings[1] = '0.046600'
+08:29:41.45  159 |                 timestamp = time.time()  # Or use time.strftime('%Y-%m-%d %H:%M:%S') for human-readable
+08:29:41.45 ...................... timestamp = 1776860981.4537003
+08:29:41.45  160 |                 expected_count = len(channels.keys())
+08:29:41.45 ...................... expected_count = 2
+08:29:41.45  161 |                 normalized_readings = readings[:expected_count]
+08:29:41.45 ...................... normalized_readings = ['0.124400', '0.046600']
+08:29:41.45 ...................... len(normalized_readings) = 2
+08:29:41.45  163 |                 if len(normalized_readings) < expected_count:
+08:29:41.45  165 |                 '''
+08:29:41.45  169 |                 snapshot = read_snapshot(tdk_snapshot_path)
+08:29:41.45 ...................... snapshot = {'id': 1.0, 'timestamp': 1776860981.155566, 'sequence': 1, 'published_at': 1776860981.1555662, 'fields': {'ps_1_voltage': 12.3, 'ps_1_current': 0.56, 'ps_1_output_state': 'ON', 'ps_2_voltage': 5.0, ...}}
+08:29:41.45 ...................... len(snapshot) = 5
+08:29:41.45 ...................... snapshot['fields'] = {'ps_1_voltage': 12.3, 'ps_1_current': 0.56, 'ps_1_output_state': 'ON', 'ps_2_voltage': 5.0, 'ps_2_current': 0.22, ...}
+08:29:41.45 ...................... len(snapshot['fields']) = 6
+08:29:41.45 ...................... snapshot['id'] = 1.0
+08:29:41.45 ...................... snapshot['published_at'] = 1776860981.1555662
+08:29:41.45 ...................... snapshot['sequence'] = 1
+08:29:41.45 ...................... snapshot['timestamp'] = 1776860981.155566
+08:29:41.45  177 |                 tdk_age_s, tdk_status = compute_freshness(
+08:29:41.45  178 |                     snapshot,
+08:29:41.45  179 |                     timestamp,
+08:29:41.45  180 |                     TDK_MAX_AGE_S,
+08:29:41.45  181 |                     TDK_MISSING_AGE_S,
+08:29:41.45  177 |                 tdk_age_s, tdk_status = compute_freshness(
+08:29:41.45 ...................... tdk_age_s = 0.29813432693481445
+08:29:41.45 ...................... tdk_status = 'fresh'
+08:29:41.45  183 |                 extracted_data = extract_tdk_columns(snapshot, tdk_age_s, tdk_status)
+08:29:41.45 ...................... extracted_data = {'ps_1_voltage': 12.3, 'ps_1_current': 0.56, 'ps_1_output_state': 'ON', 'ps_2_voltage': 5.0, 'ps_2_current': 0.22, ...}
+08:29:41.45 ...................... len(extracted_data) = 10
+08:29:41.45 ...................... extracted_data['ps_1_current'] = 0.56
+08:29:41.45 ...................... extracted_data['ps_1_output_state'] = 'ON'
+08:29:41.45 ...................... extracted_data['ps_1_voltage'] = 12.3
+08:29:41.45 ...................... extracted_data['ps_2_current'] = 0.22
+08:29:41.45 ...................... extracted_data['ps_2_output_state'] = 'OFF'
+08:29:41.45 ...................... extracted_data['ps_2_voltage'] = 5.0
+08:29:41.45 ...................... extracted_data['tdk_age_s'] = 0.29813432693481445
+08:29:41.45 ...................... extracted_data['tdk_status'] = 'fresh'
+08:29:41.45 ...................... extracted_data['tdk_timestamp'] = 1776860981.155566
+08:29:41.45 ...................... extracted_data['voltage_sum'] = 17.3
+08:29:41.45  184 |                 merged_tdk_values = []
+08:29:41.45  185 |                 for field in MERGED_FIELDS:
+08:29:41.46 ...................... field = 'ps_1_voltage'
+08:29:41.46  186 |                     value = extracted_data.get(field, "")
+08:29:41.46 .......................... value = 12.3
+08:29:41.46  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.46 .......................... merged_tdk_values = [12.3]
+08:29:41.46 .......................... len(merged_tdk_values) = 1
+08:29:41.46  185 |                 for field in MERGED_FIELDS:
+08:29:41.46 ...................... field = 'ps_1_current'
+08:29:41.46  186 |                     value = extracted_data.get(field, "")
+08:29:41.46 .......................... value = 0.56
+08:29:41.46  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.46 .......................... merged_tdk_values = [12.3, 0.56]
+08:29:41.46 .......................... len(merged_tdk_values) = 2
+08:29:41.46  185 |                 for field in MERGED_FIELDS:
+08:29:41.46 ...................... field = 'ps_1_output_state'
+08:29:41.46  186 |                     value = extracted_data.get(field, "")
+08:29:41.46 .......................... value = 'ON'
+08:29:41.46  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.46 .......................... merged_tdk_values = [12.3, 0.56, 'ON']
+08:29:41.46 .......................... len(merged_tdk_values) = 3
+08:29:41.46  185 |                 for field in MERGED_FIELDS:
+08:29:41.46 ...................... field = 'ps_2_voltage'
+08:29:41.46  186 |                     value = extracted_data.get(field, "")
+08:29:41.46 .......................... value = 5.0
+08:29:41.46  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.46 .......................... merged_tdk_values = [12.3, 0.56, 'ON', 5.0]
+08:29:41.46 .......................... len(merged_tdk_values) = 4
+08:29:41.46  185 |                 for field in MERGED_FIELDS:
+08:29:41.46 ...................... field = 'ps_2_current'
+08:29:41.46  186 |                     value = extracted_data.get(field, "")
+08:29:41.46 .......................... value = 0.22
+08:29:41.46  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.46 .......................... merged_tdk_values = [12.3, 0.56, 'ON', 5.0, 0.22]
+08:29:41.46 .......................... len(merged_tdk_values) = 5
+08:29:41.46  185 |                 for field in MERGED_FIELDS:
+08:29:41.46 ...................... field = 'ps_2_output_state'
+08:29:41.46  186 |                     value = extracted_data.get(field, "")
+08:29:41.46 .......................... value = 'OFF'
+08:29:41.46  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.47 .......................... merged_tdk_values = [12.3, 0.56, 'ON', 5.0, 0.22, 'OFF']
+08:29:41.47 .......................... len(merged_tdk_values) = 6
+08:29:41.47  185 |                 for field in MERGED_FIELDS:
+08:29:41.47 ...................... field = 'tdk_timestamp'
+08:29:41.47  186 |                     value = extracted_data.get(field, "")
+08:29:41.47 .......................... value = 1776860981.155566
+08:29:41.47  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.47 .......................... merged_tdk_values = [12.3, 0.56, 'ON', 5.0, 0.22, 'OFF', 1776860981.155566]
+08:29:41.47 .......................... len(merged_tdk_values) = 7
+08:29:41.47  185 |                 for field in MERGED_FIELDS:
+08:29:41.47 ...................... field = 'tdk_age_s'
+08:29:41.47  186 |                     value = extracted_data.get(field, "")
+08:29:41.47 .......................... value = 0.29813432693481445
+08:29:41.47  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.47 .......................... merged_tdk_values = [12.3, 0.56, 'ON', 5.0, 0.22, 'OFF', 1776860981.155566, 0.29813432693481445]
+08:29:41.47 .......................... len(merged_tdk_values) = 8
+08:29:41.47  185 |                 for field in MERGED_FIELDS:
+08:29:41.47 ...................... field = 'tdk_status'
+08:29:41.47  186 |                     value = extracted_data.get(field, "")
+08:29:41.47 .......................... value = 'fresh'
+08:29:41.47  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.47 .......................... merged_tdk_values = [12.3, 0.56, 'ON', 5.0, 0.22, 'OFF', 1776860981.155566, 0.29813432693481445, 'fresh']
+08:29:41.47 .......................... len(merged_tdk_values) = 9
+08:29:41.47  185 |                 for field in MERGED_FIELDS:
+08:29:41.47 ...................... field = 'voltage_sum'
+08:29:41.47  186 |                     value = extracted_data.get(field, "")
+08:29:41.47 .......................... value = 17.3
+08:29:41.47  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.47 .......................... merged_tdk_values = [12.3, 0.56, 'ON', 5.0, 0.22, 'OFF', 1776860981.155566, 0.29813432693481445, 'fresh', 17.3]
+08:29:41.47 .......................... len(merged_tdk_values) = 10
+08:29:41.47  185 |                 for field in MERGED_FIELDS:
+08:29:41.47  189 |                 '''
+08:29:41.47  192 |                 writer.writerow([timestamp] + normalized_readings + merged_tdk_values)
+08:29:41.48  194 |                 if len(readings) == len(channels.keys()):
+08:29:41.48  196 |                     tdk_status_live = str(extracted_data.get("tdk_status", "missing"))
+08:29:41.48 .......................... tdk_status_live = 'fresh'
+08:29:41.48  197 |                     tdk_age_live = extracted_data.get("tdk_age_s", "")
+08:29:41.48 .......................... tdk_age_live = 0.29813432693481445
+08:29:41.48  198 |                     if tdk_age_live in ("", None):
+08:29:41.48  201 |                         try:
+08:29:41.48  202 |                             tdk_age_text = f"{float(tdk_age_live):.3f}s"
+08:29:41.48 .................................. tdk_age_text = '0.298s'
+08:29:41.48  205 |                     print(f"{timestamp}:"+ 
+08:29:41.48  206 |                     ', '.join(f'{key}:{readings[index]}' for index, key in enumerate(channels.keys())) +
+08:29:41.48  205 |                     print(f"{timestamp}:"+ 
+08:29:41.48  207 |                     f" | TDK status:{tdk_status_live} age:{tdk_age_text}"
+08:29:41.48  205 |                     print(f"{timestamp}:"+ 
+08:29:41.48  145 |             while True:
+08:29:41.48  146 |                 if stop_event is not None and stop_event.is_set():
+08:29:41.48  150 |                 try:
+08:29:41.48  151 |                     data = k2700.ask('READ?').strip() # This triggers scan and returns readings
+08:29:41.49 .......................... data = '0.125400,0.047600'
+08:29:41.49  157 |                 readings = data.split(',')
+08:29:41.49 ...................... readings = ['0.125400', '0.047600']
+08:29:41.49 ...................... readings[0] = '0.125400'
+08:29:41.49 ...................... readings[1] = '0.047600'
+08:29:41.49  159 |                 timestamp = time.time()  # Or use time.strftime('%Y-%m-%d %H:%M:%S') for human-readable
+08:29:41.49 ...................... timestamp = 1776860981.4909477
+08:29:41.49  160 |                 expected_count = len(channels.keys())
+08:29:41.49  161 |                 normalized_readings = readings[:expected_count]
+08:29:41.49 ...................... normalized_readings = ['0.125400', '0.047600']
+08:29:41.49  163 |                 if len(normalized_readings) < expected_count:
+08:29:41.49  165 |                 '''
+08:29:41.49  169 |                 snapshot = read_snapshot(tdk_snapshot_path)
+08:29:41.49 ...................... snapshot = {'id': 1.0, 'timestamp': 1776860981.194217, 'sequence': 1, 'published_at': 1776860981.1942174, 'fields': {'ps_1_voltage': 12.3, 'ps_1_current': 0.56, 'ps_1_output_state': 'ON', 'ps_2_voltage': 5.0, ...}}
+08:29:41.49 ...................... snapshot['published_at'] = 1776860981.1942174
+08:29:41.49 ...................... snapshot['timestamp'] = 1776860981.194217
+08:29:41.49  177 |                 tdk_age_s, tdk_status = compute_freshness(
+08:29:41.49  178 |                     snapshot,
+08:29:41.49  179 |                     timestamp,
+08:29:41.49  180 |                     TDK_MAX_AGE_S,
+08:29:41.49  181 |                     TDK_MISSING_AGE_S,
+08:29:41.49  177 |                 tdk_age_s, tdk_status = compute_freshness(
+08:29:41.49 ...................... tdk_age_s = 0.29673075675964355
+08:29:41.49  183 |                 extracted_data = extract_tdk_columns(snapshot, tdk_age_s, tdk_status)
+08:29:41.49 ...................... extracted_data['tdk_age_s'] = 0.29673075675964355
+08:29:41.49 ...................... extracted_data['tdk_timestamp'] = 1776860981.194217
+08:29:41.49  184 |                 merged_tdk_values = []
+08:29:41.49  185 |                 for field in MERGED_FIELDS:
+08:29:41.50 ...................... field = 'ps_1_voltage'
+08:29:41.50  186 |                     value = extracted_data.get(field, "")
+08:29:41.50 .......................... value = 12.3
+08:29:41.50  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.50 .......................... merged_tdk_values = [12.3]
+08:29:41.50 .......................... len(merged_tdk_values) = 1
+08:29:41.50  185 |                 for field in MERGED_FIELDS:
+08:29:41.50 ...................... field = 'ps_1_current'
+08:29:41.50  186 |                     value = extracted_data.get(field, "")
+08:29:41.50 .......................... value = 0.56
+08:29:41.50  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.50 .......................... merged_tdk_values = [12.3, 0.56]
+08:29:41.50 .......................... len(merged_tdk_values) = 2
+08:29:41.50  185 |                 for field in MERGED_FIELDS:
+08:29:41.50 ...................... field = 'ps_1_output_state'
+08:29:41.50  186 |                     value = extracted_data.get(field, "")
+08:29:41.50 .......................... value = 'ON'
+08:29:41.50  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.50 .......................... merged_tdk_values = [12.3, 0.56, 'ON']
+08:29:41.50 .......................... len(merged_tdk_values) = 3
+08:29:41.50  185 |                 for field in MERGED_FIELDS:
+08:29:41.50 ...................... field = 'ps_2_voltage'
+08:29:41.50  186 |                     value = extracted_data.get(field, "")
+08:29:41.50 .......................... value = 5.0
+08:29:41.50  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.50 .......................... merged_tdk_values = [12.3, 0.56, 'ON', 5.0]
+08:29:41.50 .......................... len(merged_tdk_values) = 4
+08:29:41.50  185 |                 for field in MERGED_FIELDS:
+08:29:41.50 ...................... field = 'ps_2_current'
+08:29:41.50  186 |                     value = extracted_data.get(field, "")
+08:29:41.50 .......................... value = 0.22
+08:29:41.50  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.50 .......................... merged_tdk_values = [12.3, 0.56, 'ON', 5.0, 0.22]
+08:29:41.50 .......................... len(merged_tdk_values) = 5
+08:29:41.50  185 |                 for field in MERGED_FIELDS:
+08:29:41.50 ...................... field = 'ps_2_output_state'
+08:29:41.50  186 |                     value = extracted_data.get(field, "")
+08:29:41.51 .......................... value = 'OFF'
+08:29:41.51  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.51 .......................... merged_tdk_values = [12.3, 0.56, 'ON', 5.0, 0.22, 'OFF']
+08:29:41.51 .......................... len(merged_tdk_values) = 6
+08:29:41.51  185 |                 for field in MERGED_FIELDS:
+08:29:41.51 ...................... field = 'tdk_timestamp'
+08:29:41.51  186 |                     value = extracted_data.get(field, "")
+08:29:41.51 .......................... value = 1776860981.194217
+08:29:41.51  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.51 .......................... merged_tdk_values = [12.3, 0.56, 'ON', 5.0, 0.22, 'OFF', 1776860981.194217]
+08:29:41.51 .......................... len(merged_tdk_values) = 7
+08:29:41.51  185 |                 for field in MERGED_FIELDS:
+08:29:41.51 ...................... field = 'tdk_age_s'
+08:29:41.51  186 |                     value = extracted_data.get(field, "")
+08:29:41.51 .......................... value = 0.29673075675964355
+08:29:41.51  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.51 .......................... merged_tdk_values = [12.3, 0.56, 'ON', 5.0, 0.22, 'OFF', 1776860981.194217, 0.29673075675964355]
+08:29:41.51 .......................... len(merged_tdk_values) = 8
+08:29:41.51  185 |                 for field in MERGED_FIELDS:
+08:29:41.51 ...................... field = 'tdk_status'
+08:29:41.51  186 |                     value = extracted_data.get(field, "")
+08:29:41.51 .......................... value = 'fresh'
+08:29:41.51  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.51 .......................... merged_tdk_values = [12.3, 0.56, 'ON', 5.0, 0.22, 'OFF', 1776860981.194217, 0.29673075675964355, 'fresh']
+08:29:41.51 .......................... len(merged_tdk_values) = 9
+08:29:41.51  185 |                 for field in MERGED_FIELDS:
+08:29:41.51 ...................... field = 'voltage_sum'
+08:29:41.51  186 |                     value = extracted_data.get(field, "")
+08:29:41.51 .......................... value = 17.3
+08:29:41.51  187 |                     merged_tdk_values.append("" if value is None else value)
+08:29:41.51 .......................... merged_tdk_values = [12.3, 0.56, 'ON', 5.0, 0.22, 'OFF', 1776860981.194217, 0.29673075675964355, 'fresh', 17.3]
+08:29:41.51 .......................... len(merged_tdk_values) = 10
+08:29:41.51  185 |                 for field in MERGED_FIELDS:
+08:29:41.51  189 |                 '''
+08:29:41.52  192 |                 writer.writerow([timestamp] + normalized_readings + merged_tdk_values)
+08:29:41.52  194 |                 if len(readings) == len(channels.keys()):
+08:29:41.52  196 |                     tdk_status_live = str(extracted_data.get("tdk_status", "missing"))
+08:29:41.52  197 |                     tdk_age_live = extracted_data.get("tdk_age_s", "")
+08:29:41.52 .......................... tdk_age_live = 0.29673075675964355
+08:29:41.52  198 |                     if tdk_age_live in ("", None):
+08:29:41.52  201 |                         try:
+08:29:41.52  202 |                             tdk_age_text = f"{float(tdk_age_live):.3f}s"
+08:29:41.52 .................................. tdk_age_text = '0.297s'
+08:29:41.52  205 |                     print(f"{timestamp}:"+ 
+08:29:41.52  206 |                     ', '.join(f'{key}:{readings[index]}' for index, key in enumerate(channels.keys())) +
+08:29:41.52  205 |                     print(f"{timestamp}:"+ 
+08:29:41.52  207 |                     f" | TDK status:{tdk_status_live} age:{tdk_age_text}"
+08:29:41.52  205 |                     print(f"{timestamp}:"+ 
+08:29:41.52  145 |             while True:
+08:29:41.52  146 |                 if stop_event is not None and stop_event.is_set():
+08:29:41.52  147 |                     print("Stop signal received. Ending scan.")
+08:29:41.52  148 |                     break
+08:29:41.52  229 |             print("DAQ2700 exiting.")
+08:29:41.53  230 |             try:
+08:29:41.53  231 |                 k2700.write('ABOR')        # Abort any ongoing operation
+08:29:41.53  232 |                 k2700.write('TRAC:CLE')    # Clear instrument buffer
+08:29:41.53  233 |                 k2700.write('INIT:CONT OFF')
+08:29:41.53  234 |                 k2700.write('ROUT:SCAN:LSEL NONE')
+08:29:41.53  237 |             k2700.shutdown()
+08:29:41.53  238 |             print("Keithley disconnected.")
+08:29:41.53  133 |     with open(csv_title, 'w', newline='') as csvfile:
+08:29:41.53 <<< Return value from DAQ2700: None
