@@ -4,6 +4,23 @@ This public repository is a portfolio-focused research-engineering project. It d
 
 The core idea is simple: a DAQ logger records measurement channels, a power-supply logger publishes the latest telemetry snapshot, and the DAQ row records whether that telemetry was fresh, stale, or missing. A calibration package then turns raw DAQ current readings into reference-scale values using a versioned JSON artifact.
 
+## Documentation (start here)
+
+Everything you need is in the repo as normal Markdown — click the links below (they work on GitHub and locally).
+
+| Topic | Link |
+| --- | --- |
+| Documentation index | [docs/README.md](docs/README.md) |
+| Architecture and data flow | [docs/architecture/dataflow.md](docs/architecture/dataflow.md) |
+| Calibration methodology | [docs/calibration/methodology.md](docs/calibration/methodology.md) |
+| Runbooks (commands) | [docs/workflows/runbooks.md](docs/workflows/runbooks.md) |
+| Reproducibility and public boundary | [docs/reproducibility.md](docs/reproducibility.md) |
+| Synthetic examples | [examples/](examples/) |
+
+**GitHub Wiki (optional companion):** [Project Wiki](https://github.com/harshddes/instrumentation-calibration-workbench/wiki) — this is a separate site on GitHub (Wiki tab next to Issues). It is not live until the first page is created: open the [Wiki tab](https://github.com/harshddes/instrumentation-calibration-workbench/wiki), click **Create the first page**, save **Home**, then the pages in [wiki/](wiki/) can be published there. Until then, use the [docs/](docs/) links above; they are the same material and work immediately.
+
+Wiki source files (browse in the repo): [wiki/Home.md](wiki/Home.md) · [Architecture](wiki/Architecture.md) · [Calibration](wiki/Calibration.md) · [Screenshots](wiki/Screenshots.md) · [Reproducibility](wiki/Reproducibility.md)
+
 ## What This Shows
 
 - Multi-instrument logging architecture with a JSON snapshot bridge.
@@ -15,7 +32,7 @@ The core idea is simple: a DAQ logger records measurement channels, a power-supp
 
 ## Screenshots
 
-These images show the actual operator GUI surfaces used by the DAQ and TDK logging tools. The earlier SVG mockups are still kept in `docs/assets/readme/` as design/reference assets.
+These images show the actual operator GUI surfaces used by the DAQ and TDK logging tools. SVG reference mockups are in [docs/assets/readme/](docs/assets/readme/).
 
 ![Keithley DAQ GUI](docs/assets/readme/daq.png)
 
@@ -27,18 +44,18 @@ These images show the actual operator GUI surfaces used by the DAQ and TDK loggi
 
 | Path | Purpose |
 | --- | --- |
-| `instrumentation/daq/` | Keithley DAQ acquisition class and Tk GUI entry point. |
-| `instrumentation/tdk/` | TDK Lambda telemetry/control logic and Tk GUI entry point. |
-| `instrumentation/snapshot.py` | Shared snapshot contract used to bridge TDK telemetry into DAQ rows. |
-| `tdk_snapshot.py` | Compatibility copy of the snapshot helper for older examples and traces. |
-| `calibration_process/` | Versioned calibration generator, runtime library, synthetic sources, and demo artifacts. |
-| `examples/` | Synthetic merged-session CSV, synthetic calibration CSV, and example snapshot JSON. |
-| `test_logging/` | Retained test logs approved for this public showcase. |
-| `tdklambda/data/` | Retained TDK data/examples approved for this public showcase. |
-| `code_xray/` | Static/dynamic code-tracing experiment for understanding DAQ variable flow. |
-| `SCD_3D_AI_Lab/` | Streamlit CSV exploration dashboard retained as a supporting analysis tool. |
-| `docs/` | Architecture, calibration, workflow, and reproducibility documentation. |
-| `wiki/` | Markdown source for the GitHub Wiki pages. |
+| [instrumentation/daq/](instrumentation/daq/) | Keithley DAQ acquisition class and Tk GUI entry point. |
+| [instrumentation/tdk/](instrumentation/tdk/) | TDK Lambda telemetry/control logic and Tk GUI entry point. |
+| [instrumentation/snapshot.py](instrumentation/snapshot.py) | Shared snapshot contract used to bridge TDK telemetry into DAQ rows. |
+| [tdk_snapshot.py](tdk_snapshot.py) | Compatibility copy of the snapshot helper for older examples and traces. |
+| [calibration_process/](calibration_process/) | Versioned calibration generator, runtime library, synthetic sources, and demo artifacts. |
+| [examples/](examples/) | Synthetic merged-session CSV, synthetic calibration CSV, and example snapshot JSON. |
+| [test_logging/](test_logging/) | Retained test logs approved for this public showcase. |
+| [tdklambda/data/](tdklambda/data/) | Retained TDK data/examples approved for this public showcase. |
+| [code_xray/](code_xray/) | Static/dynamic code-tracing experiment for understanding DAQ variable flow. |
+| [SCD_3D_AI_Lab/](SCD_3D_AI_Lab/) | Streamlit CSV exploration dashboard retained as a supporting analysis tool. |
+| [docs/](docs/) | Architecture, calibration, workflow, and reproducibility documentation. |
+| [wiki/](wiki/) | Markdown source for GitHub Wiki pages (see Documentation section above). |
 
 ## Data Flow
 
@@ -99,13 +116,13 @@ cd SCD_3D_AI_Lab
 streamlit run app.py
 ```
 
+Command details: [docs/workflows/runbooks.md](docs/workflows/runbooks.md)
+
 ## Calibration Demo
 
 The default public artifact is generated from synthetic data:
 
-```text
-calibration_process/artifacts/demo_keeper_current_linear.json
-```
+[calibration_process/artifacts/demo_keeper_current_linear.json](calibration_process/artifacts/demo_keeper_current_linear.json)
 
 The model is:
 
@@ -113,7 +130,7 @@ The model is:
 ps_1_current = 0.4 * DAQ_KEEPER_I + 0.01
 ```
 
-The synthetic artifact is deliberately small so reviewers can inspect the full lineage: source CSV, raw snapshot copy, cleaned CSV, rejected-row CSV, JSON metadata, and SVG plot.
+The synthetic artifact is deliberately small so reviewers can inspect the full lineage: source CSV, raw snapshot copy, cleaned CSV, rejected-row CSV, JSON metadata, and SVG plot. See [docs/calibration/methodology.md](docs/calibration/methodology.md).
 
 ## Snapshot Contract
 
@@ -136,24 +153,12 @@ The project keeps the real-time bridge explicit. A snapshot payload contains:
 }
 ```
 
-`tdk_snapshot.json` is retained as an approved runtime-state sample. It is not a complete experiment record. For a portable example, use `examples/tdk_snapshot.example.json`.
+[tdk_snapshot.json](tdk_snapshot.json) is retained as an approved runtime-state sample. It is not a complete experiment record. For a portable example, use [examples/tdk_snapshot.example.json](examples/tdk_snapshot.example.json).
 
 ## Vendor References
 
-The `tdklambda/` folder includes approved vendor/reference PDFs for VISA and TDK Lambda operation. They are included for context and remain third-party reference documents, not original project source code.
+The [tdklambda/](tdklambda/) folder includes approved vendor/reference PDFs for VISA and TDK Lambda operation. They are included for context and remain third-party reference documents, not original project source code.
 
 ## Public-Release Boundary
 
-This repository is curated from a larger working lab repository. Large experiment trees, scratch folders, private editor metadata, and device-specific code outside this showcase scope are intentionally excluded. Retained support folders were kept because they help demonstrate the engineering workflow.
-
-## Documentation
-
-Start here:
-
-- `docs/README.md`
-- `docs/architecture/dataflow.md`
-- `docs/calibration/methodology.md`
-- `docs/workflows/runbooks.md`
-- `docs/reproducibility.md`
-
-GitHub Wiki source pages live in `wiki/`.
+This repository is curated from a larger working lab repository. Large experiment trees, scratch folders, private editor metadata, and device-specific code outside this showcase scope are intentionally excluded. Retained support folders were kept because they help demonstrate the engineering workflow. Details: [docs/reproducibility.md](docs/reproducibility.md)
