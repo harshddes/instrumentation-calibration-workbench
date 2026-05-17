@@ -12,7 +12,7 @@ This documentation explains the public showcase version of the instrumentation a
 
 ## GitHub Wiki
 
-Companion pages (shorter summaries) live in [../wiki/](../wiki/). The published site is at [Project Wiki](https://github.com/harshddes/instrumentation-calibration-workbench/wiki) once the Wiki tab has its first page; until then, use the links above.
+Companion pages (shorter summaries) are published at the [Project Wiki](https://github.com/harshddes/instrumentation-calibration-workbench/wiki). Their source files are mirrored in [../wiki/](../wiki/).
 
 ## Canonical Versus Supporting Material
 

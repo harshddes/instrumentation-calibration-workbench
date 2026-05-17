@@ -17,7 +17,7 @@ Everything you need is in the repo as normal Markdown — click the links below 
 | Reproducibility and public boundary | [docs/reproducibility.md](docs/reproducibility.md) |
 | Synthetic examples | [examples/](examples/) |
 
-**GitHub Wiki (optional companion):** [Project Wiki](https://github.com/harshddes/instrumentation-calibration-workbench/wiki) — this is a separate site on GitHub (Wiki tab next to Issues). It is not live until the first page is created: open the [Wiki tab](https://github.com/harshddes/instrumentation-calibration-workbench/wiki), click **Create the first page**, save **Home**, then the pages in [wiki/](wiki/) can be published there. Until then, use the [docs/](docs/) links above; they are the same material and work immediately.
+**GitHub Wiki (optional companion):** [Project Wiki](https://github.com/harshddes/instrumentation-calibration-workbench/wiki) — a shorter, reader-friendly companion to the canonical [docs/](docs/) pages.
 
 Wiki source files (browse in the repo): [wiki/Home.md](wiki/Home.md) · [Architecture](wiki/Architecture.md) · [Calibration](wiki/Calibration.md) · [Screenshots](wiki/Screenshots.md) · [Reproducibility](wiki/Reproducibility.md)
 
