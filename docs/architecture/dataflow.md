@@ -1,5 +1,7 @@
 # Architecture And Data Flow
 
+[Back to documentation index](../README.md)
+
 ## Objective
 
 The workbench demonstrates a common lab-software problem: two instruments produce related data, but not from one shared process or clock. The implemented solution uses a small JSON snapshot as a bridge between TDK telemetry and DAQ rows.
@@ -24,7 +26,7 @@ flowchart TD
 
 ## Snapshot Contract
 
-`instrumentation/snapshot.py` defines:
+[instrumentation/snapshot.py](../../instrumentation/snapshot.py) defines:
 
 - `TDK_FIELDS`: supply voltage/current/output-state fields.
 - `TDK_METADATA_FIELDS`: timestamp, age, status, and voltage sum fields.
@@ -48,8 +50,8 @@ The key engineering idea is not pretending the instruments are perfectly synchro
 
 ## Public Files
 
-- `instrumentation/daq/DAQ2700.py`
-- `instrumentation/tdk/TDKLogic.py`
-- `instrumentation/snapshot.py`
-- `tdk_snapshot.json`
-- `examples/tdk_snapshot.example.json`
+- [instrumentation/daq/DAQ2700.py](../../instrumentation/daq/DAQ2700.py)
+- [instrumentation/tdk/TDKLogic.py](../../instrumentation/tdk/TDKLogic.py)
+- [instrumentation/snapshot.py](../../instrumentation/snapshot.py)
+- [tdk_snapshot.json](../../tdk_snapshot.json)
+- [examples/tdk_snapshot.example.json](../../examples/tdk_snapshot.example.json)

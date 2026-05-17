@@ -1,5 +1,7 @@
 # Workflow Runbooks
 
+[Back to documentation index](../README.md)
+
 ## Install
 
 ```powershell
@@ -30,7 +32,7 @@ Use `demo_logs` or another neutral output folder for public demos.
 python -m instrumentation.tdk.GUI_TDK
 ```
 
-The GUI defaults to `tdklambda/data` for TDK logs.
+The GUI defaults to [tdklambda/data/](../../tdklambda/data/) for TDK logs.
 
 ## Run CSV Dashboard
 
@@ -51,4 +53,4 @@ python code_xray\dynamic\run_with_snoop.py
 python code_xray\dynamic\run_with_icecream.py
 ```
 
-`code_xray/` is retained to show how static and dynamic tracing were used to reason about DAQ variable flow.
+[code_xray/](../../code_xray/) is retained to show how static and dynamic tracing were used to reason about DAQ variable flow.

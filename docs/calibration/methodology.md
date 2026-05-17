@@ -1,14 +1,14 @@
 # Calibration Methodology
 
+[Back to documentation index](../README.md)
+
 ## Purpose
 
 The public calibration example demonstrates a versioned linear calibration workflow. It uses synthetic data so the full artifact lineage can be published safely.
 
 ## Current Demo Artifact
 
-```text
-calibration_process/artifacts/demo_keeper_current_linear.json
-```
+[calibration_process/artifacts/demo_keeper_current_linear.json](../../calibration_process/artifacts/demo_keeper_current_linear.json)
 
 The generated model is:
 
@@ -19,14 +19,12 @@ ps_1_current = 0.4 * DAQ_KEEPER_I + 0.01
 
 ## Source Files
 
-```text
-examples/synthetic_merged_session.csv
-examples/synthetic_calibration_source.csv
-calibration_process/curated_sources/synthetic_calibration_source.csv
-calibration_process/raw_sources/synthetic_merged_session.csv
-```
+- [examples/synthetic_merged_session.csv](../../examples/synthetic_merged_session.csv)
+- [examples/synthetic_calibration_source.csv](../../examples/synthetic_calibration_source.csv)
+- [calibration_process/curated_sources/synthetic_calibration_source.csv](../../calibration_process/curated_sources/synthetic_calibration_source.csv)
+- [calibration_process/raw_sources/synthetic_merged_session.csv](../../calibration_process/raw_sources/synthetic_merged_session.csv)
 
-The generator copies the raw source into `raw_sources/`, computes SHA256 hashes, filters invalid rows, fits the linear model, and writes JSON/CSV/SVG artifacts.
+The generator copies the raw source into [calibration_process/raw_sources/](../../calibration_process/raw_sources/), computes SHA256 hashes, filters invalid rows, fits the linear model, and writes JSON/CSV/SVG artifacts.
 
 ## Regeneration
 
@@ -38,12 +36,10 @@ python -m calibration_process.generate_keeper_current_calibration
 
 Expected outputs:
 
-```text
-calibration_process/artifacts/demo_keeper_current_linear.json
-calibration_process/artifacts/demo_keeper_current_linear.cleaned.csv
-calibration_process/artifacts/demo_keeper_current_linear.rejected.csv
-calibration_process/artifacts/plots/demo_keeper_current_linear.svg
-```
+- [calibration_process/artifacts/demo_keeper_current_linear.json](../../calibration_process/artifacts/demo_keeper_current_linear.json)
+- [calibration_process/artifacts/demo_keeper_current_linear.cleaned.csv](../../calibration_process/artifacts/demo_keeper_current_linear.cleaned.csv)
+- [calibration_process/artifacts/demo_keeper_current_linear.rejected.csv](../../calibration_process/artifacts/demo_keeper_current_linear.rejected.csv)
+- [calibration_process/artifacts/plots/demo_keeper_current_linear.svg](../../calibration_process/artifacts/plots/demo_keeper_current_linear.svg)
 
 ## Runtime Use
 

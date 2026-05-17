@@ -1,5 +1,7 @@
 # Calibration
 
+[Full calibration methodology](https://github.com/harshddes/instrumentation-calibration-workbench/blob/main/docs/calibration/methodology.md)
+
 The calibration package turns a raw DAQ current channel into a reference-scale value.
 
 The public artifact is synthetic and reproducible:

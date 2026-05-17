@@ -1,5 +1,7 @@
 # Architecture
 
+[Full architecture document](https://github.com/harshddes/instrumentation-calibration-workbench/blob/main/docs/architecture/dataflow.md)
+
 The project bridges two independent instrument workflows:
 
 - TDK telemetry publishes the latest power-supply state into a JSON snapshot.
