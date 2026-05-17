@@ -1,11 +1,11 @@
 # code_xray: experiment folder for visualizing variable/data-structure flow
 
-Target file (verbatim copy, not modified): `DAQ2700.py`.
+Target file (verbatim copy, not modified): [DAQ2700.py](DAQ2700.py).
 Seed question: *"Where does `readings` come from, what is it, who touched it?"*
 
 All tools were run against this one file so results are directly comparable.
 
-For the repository-level architecture and the role of `DAQ2700.py` in the acquisition pipeline, see `../docs/architecture/dataflow.md`.
+For the repository-level architecture and the role of [DAQ2700.py](DAQ2700.py) in the acquisition pipeline, see [docs/architecture/dataflow.md](../docs/architecture/dataflow.md).
 
 ## What's in here
 

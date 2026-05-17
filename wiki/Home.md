@@ -6,7 +6,7 @@ This wiki is the portfolio-friendly companion to the repository docs. The projec
 
 ## Wiki pages
 
-- [Architecture](Architecture)
-- [Calibration](Calibration)
-- [Screenshots](Screenshots)
-- [Reproducibility](Reproducibility)
+- [Architecture](Architecture.md)
+- [Calibration](Calibration.md)
+- [Screenshots](Screenshots.md)
+- [Reproducibility](Reproducibility.md)

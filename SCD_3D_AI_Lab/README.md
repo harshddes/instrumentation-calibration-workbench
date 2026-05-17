@@ -9,7 +9,7 @@ Interactive dashboard for your DAQ CSV data:
 - chat with an AI coding coach (optional API key)
 - play a small data-intuition game
 
-For the repository-level engineering context and how this dashboard fits into the acquisition/calibration workflow, see `../README.md` and `../docs/research-report.md`.
+For the repository-level engineering context and how this dashboard fits into the acquisition/calibration workflow, start with the [repository overview](../README.md) and [architecture/data-flow notes](../docs/architecture/dataflow.md).
 
 ## Quick start
 
