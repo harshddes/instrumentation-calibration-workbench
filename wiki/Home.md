@@ -8,5 +8,10 @@ This wiki is the portfolio-friendly companion to the repository docs. The projec
 
 - [Architecture](Architecture.md)
 - [Calibration](Calibration.md)
+- [Plasma Diagnostics](PlasmaDiagnostics.md)
 - [Screenshots](Screenshots.md)
 - [Reproducibility](Reproducibility.md)
+
+## LunarRego in one paragraph
+
+A bias electrode in the vacuum chamber is driven +/− to set the electric field for lunar-regolith-simulant lofting. LP, EP, and RPA quantify the plasma so lofting can be compared against measured plasma potential / ion-retarding structure. Details: [Plasma Diagnostics](PlasmaDiagnostics.md).

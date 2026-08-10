@@ -2,66 +2,121 @@
 
 [Back to documentation index](../README.md)
 
-## Scope
+## Experiment context
 
-This public package shows the LunarRego operator GUI and a reproducible I–V review
-pipeline for three approved datasets only:
+LunarRego is a vacuum-chamber campaign that couples **plasma diagnostics** to
+**lunar-regolith-simulant lofting** under a controlled electric field.
+
+Inside the chamber, a dedicated **bias electrode** (square plate on a vertical
+rod in the chamber photograph) is driven to a chosen **positive or negative**
+potential. That electrode sets the ambient electric field. Dust / regolith
+simulant response (charging, lofting, transport) is then interpreted against
+the local plasma state measured by:
+
+| Diagnostic | Role in the campaign |
+| --- | --- |
+| Langmuir Probe (LP) | Local electron/ion current collection; floating and plasma-potential markers |
+| Emissive Probe (EP) | Independent plasma-potential estimate via high-emission floating potential |
+| Retarding Potential Analyzer (RPA) | Ion energy / retarding-edge structure at the collector |
+
+The public repository retains only the approved LP, EP, and RPA example CSVs
+plus the operator GUI / analysis code. Other private run trees are excluded.
+
+## Hardware roles (RPA)
+
+The RPA is wired as a multi-plate stack. In the LunarRego GUI, each plate is a
+mapped role:
+
+| Role | Typical function in this build |
+| --- | --- |
+| RPA_P0 / P1 / P3 | Fixed-bias screening / intermediate plates (backend may be stubbed) |
+| **RPA_P2** | Retarding / discriminator plate — **software voltage sweep** |
+| **RPA_P4** | Collector — fixed collector bias on Keithley 2400-LV |
+
+Lockstep acquisition rule used by the GUI:
+
+1. P2 is the **NPLC master** for the RPA suite.
+2. For each sweep step: set P2 voltage → read Keithley **6485** picoammeter on
+   the collector path (companion to P4).
+3. Write one combined row: `Timestamp, Sweep_V, Picoammeter_I`.
+4. Non-sweep plates may hold fixed voltages and write their own CSVs; they do
+   **not** free-run the 6485.
+
+Runnable backends in the public package: Keithley 2410, 2400, 2400-LV, and 6485.
+Siglent / HP / Fluke entries appear in the Hardware Map but stay blocked until
+a backend exists.
+
+## Approved public CSVs
 
 | Probe | Approved public CSV |
 | --- | --- |
 | Langmuir Probe (LP) | [examples/plasma_diagnostics/LP_07302026_140808.csv](../../examples/plasma_diagnostics/LP_07302026_140808.csv) |
-| Retarding Potential Analyzer (RPA) | [examples/plasma_diagnostics/RPA_combined_07302026_172017.csv](../../examples/plasma_diagnostics/RPA_combined_07302026_172017.csv) |
+| Retarding Potential Analyzer (RPA) | [examples/plasma_diagnostics/RPA_combined_07302026_170652.csv](../../examples/plasma_diagnostics/RPA_combined_07302026_170652.csv) |
 | Emissive Probe (EP) | [examples/plasma_diagnostics/EP_PlasmaDiagnostics_exp.csv](../../examples/plasma_diagnostics/EP_PlasmaDiagnostics_exp.csv) |
 
-No other LunarRego experiment logs are retained in this repository.
-
 ## Acquisition GUI
-
-Entry point:
 
 ```powershell
 python -m instrumentation.lunar_rego.GUI_LunarRego
 ```
 
-The GUI follows the same operator pattern as the DAQ/TDK tools: save folder,
-CSV naming, Start/Stop, and background workers. A Hardware Map assigns SMU /
-panel roles for LP, EP, and each RPA plate. Only Keithley backends are runnable
-in the public package; other listed instruments remain stubs.
+Operator pattern matches the DAQ/TDK tools: save folder, CSV prefix, timestamp
+filenames, Start/Stop (per role and “all enabled”), background workers, and a
+Hardware Map for instrument / panel / GPIB / board assignment.
 
-## Plasma-potential estimates from dI/dV
+Real operator screenshot: [docs/assets/readme/lunar-rego-gui.png](../assets/readme/lunar-rego-gui.png)
 
-Regenerate the public review plots:
+Chamber probe / electrode photograph: [docs/assets/readme/lunar-rego-chamber-probes.png](../assets/readme/lunar-rego-chamber-probes.png)
+
+## Analysis: I–V and dI/dV
 
 ```powershell
 python -m instrumentation.lunar_rego.analyze_iv_curves
 ```
 
-Method:
+Shared pipeline:
 
-1. Sort the I–V pairs by voltage.
-2. Optionally smooth noisy current (used for RPA).
-3. Compute `dI/dV` with a central difference.
-4. Mark `V*` at the dominant derivative feature (edge samples trimmed so a
-   single end-point spike cannot steal the peak).
-5. For LP, also mark floating potential `V_f` where current crosses zero.
+1. Load approved CSV / EP sheet blocks.
+2. Sort by voltage; average duplicate voltages.
+3. Optionally smooth current (RPA).
+4. Compute `dI/dV` with a central difference.
+5. Mark `V*` at the dominant derivative feature (edge samples trimmed).
+6. For LP, also mark floating potential `V_f` at the I≈0 crossing.
+7. For EP, prefer the high-emission floating-potential asymptote as `Vp`.
+
+### Physics interpretation
+
+**Langmuir Probe**
+
+- Ion / electron collection current vs probe bias.
+- `V_f`: net current ≈ 0 (floating potential).
+- `V*` from the electron-transition peak of `dI/dV` is the public plasma-potential
+  marker. If the sweep has not fully entered electron saturation, treat `V*`
+  together with `V_f` rather than as a final fitted sheath model.
+
+**Emissive Probe**
+
+- Heater / bias tables are setup curves, not plasma potential.
+- As thermionic emission increases, floating potential rises toward plasma
+  potential. The public estimate uses the mean of the highest-emission floating
+  voltages.
+
+**Retarding Potential Analyzer**
+
+- Ions must overcome the retarding barrier on P2 to reach the collector.
+- Collector current vs `Sweep_V` encodes the transmitted ion population.
+- The public `V*` is the dominant feature of smoothed `|dI/dV|` on that curve
+  (characteristic retarding-edge / ion-energy marker for the retained sweep).
 
 ### Latest regenerated estimates
 
 | Diagnostic | Estimate | Notes |
 | --- | --- | --- |
 | LP | `V* ≈ 23.6 V`, `V_f ≈ 11.5 V` | Electron-transition peak of dI/dV; sweep still rising near 30 V |
-| RPA | `V* ≈ 16.6 V` | Collector current is near the picoammeter noise floor; treat as qualitative |
-| EP | `Vp ≈ 21.3 V` | High-emission floating-potential asymptote (preferred EP method) |
+| RPA | `V* ≈ 21.5 V` | From `RPA_combined_07302026_170652.csv` (approved collector sweep) |
+| EP | `Vp ≈ 21.3 V` | High-emission floating-potential asymptote |
 
-Review SVGs live under [docs/assets/readme/](../assets/readme/).
+RPA and EP markers agree to ~0.2 V on the approved public files — a useful
+cross-check that the diagnostics are seeing a consistent plasma-potential scale.
 
-## Interpretation notes
-
-- **LP:** Plasma potential is associated with the electron-transition peak of
-  `dI/dV`. If the sweep does not fully enter electron saturation, `V*` is a
-  lower-bound style indicator and should be read with `V_f`.
-- **RPA:** The combined CSV is sweep voltage vs collector current. A clean
-  retarding edge needs adequate signal-to-noise; the approved file is retained
-  to show the pipeline even when the derivative feature is weak.
-- **EP:** Heater/bias tables in the sheet are not themselves plasma potential.
-  The floating-potential vs emission table is the public EP plasma-potential path.
+Review SVGs and JSON summary live under [docs/assets/readme/](../assets/readme/).

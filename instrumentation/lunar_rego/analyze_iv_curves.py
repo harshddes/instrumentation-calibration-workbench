@@ -275,7 +275,7 @@ def run_analysis(
     out_dir: Path = DEFAULT_OUT,
 ) -> Dict[str, object]:
     lp_path = data_dir / "LP_07302026_140808.csv"
-    rpa_path = data_dir / "RPA_combined_07302026_172017.csv"
+    rpa_path = data_dir / "RPA_combined_07302026_170652.csv"
     ep_path = data_dir / "EP_PlasmaDiagnostics_exp.csv"
 
     lp = load_lp(lp_path)

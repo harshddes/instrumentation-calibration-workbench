@@ -36,7 +36,7 @@ These are supporting examples for a portfolio repository. Large unrelated experi
 Only these three files are approved for public release:
 
 - `LP_07302026_140808.csv`
-- `RPA_combined_07302026_172017.csv`
+- `RPA_combined_07302026_170652.csv`
 - `EP_PlasmaDiagnostics_exp.csv`
 
 Other LunarRego / Keithley run folders from the private lab tree are excluded on purpose.

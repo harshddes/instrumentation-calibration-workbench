@@ -4,7 +4,7 @@ This public repository is a portfolio-focused research-engineering project. It d
 
 The core idea is simple: a DAQ logger records measurement channels, a power-supply logger publishes the latest telemetry snapshot, and the DAQ row records whether that telemetry was fresh, stale, or missing. A calibration package then turns raw DAQ current readings into reference-scale values using a versioned JSON artifact.
 
-Beyond the DAQ/TDK pair, the repo now also shows the LunarRego plasma-diagnostics operator GUI (LP / EP / RPA) and a public I–V review path that estimates plasma-related voltages from `dI/dV` on approved example CSVs only.
+Beyond the DAQ/TDK pair, the repo also shows the **LunarRego plasma-diagnostics** operator path: Langmuir Probe (LP), Emissive Probe (EP), and Retarding Potential Analyzer (RPA), plus a public I–V / `dI/dV` review on approved example CSVs only.
 
 ## Documentation (start here)
 
@@ -22,7 +22,7 @@ Everything you need is in the repo as normal Markdown — click the links below 
 
 **GitHub Wiki (optional companion):** [Project Wiki](https://github.com/harshddes/instrumentation-calibration-workbench/wiki) — a shorter, reader-friendly companion to the canonical [docs/](docs/) pages.
 
-Wiki source files (browse in the repo): [wiki/Home.md](wiki/Home.md) · [Architecture](wiki/Architecture.md) · [Calibration](wiki/Calibration.md) · [Screenshots](wiki/Screenshots.md) · [Reproducibility](wiki/Reproducibility.md)
+Wiki source files (browse in the repo): [wiki/Home.md](wiki/Home.md) · [Architecture](wiki/Architecture.md) · [Calibration](wiki/Calibration.md) · [Plasma Diagnostics](wiki/PlasmaDiagnostics.md) · [Screenshots](wiki/Screenshots.md) · [Reproducibility](wiki/Reproducibility.md)
 
 ## What This Shows
 
@@ -30,6 +30,7 @@ Wiki source files (browse in the repo): [wiki/Home.md](wiki/Home.md) · [Archite
 - Keithley DAQ scan logic with CSV output and TDK telemetry columns.
 - TDK Lambda telemetry/control code with logging, GUI operation, and safety-oriented state handling.
 - LunarRego LP / EP / RPA operator GUI with hardware-map role assignment and Keithley backends.
+- Vacuum-chamber plasma diagnostics tied to a bias electrode used for lunar-regolith-simulant lofting studies.
 - Public I–V review for approved LP, EP, and RPA CSVs, including `dI/dV` plasma-potential markers.
 - A calibration generator that stores source hashes, cleaning rules, model coefficients, fit quality, and review plots.
 - A reusable calibration library for scripts, notebooks, and downstream analysis.
@@ -37,13 +38,23 @@ Wiki source files (browse in the repo): [wiki/Home.md](wiki/Home.md) · [Archite
 
 ## Screenshots
 
-Operator GUI surfaces and plasma-diagnostics review plots. SVG mockups / regenerated plots live in [docs/assets/readme/](docs/assets/readme/).
+### DAQ and TDK operator GUIs
 
 ![Keithley DAQ GUI](docs/assets/readme/daq.png)
 
 ![TDK Lambda GUI](docs/assets/readme/tdk.png)
 
-![LunarRego LP / EP / RPA GUI](docs/assets/readme/lunar-rego-gui.svg)
+### LunarRego chamber and diagnostics GUI
+
+Vacuum-chamber probe assembly used for LunarRego plasma diagnostics. The square metallic plate on the left is the **bias electrode**: it is driven to a chosen **positive or negative** potential to generate the desired electric field while lunar-regolith simulant lofting / charging is observed. The horizontal probe and central stack carry the plasma diagnostics (LP / EP / RPA path) into the measurement volume.
+
+![LunarRego chamber probes and bias electrode](docs/assets/readme/lunar-rego-chamber-probes.png)
+
+Operator GUI for LP / EP / RPA acquisition. The RPA tab maps each plate to an instrument role: **P2** (Keithley 2410) owns the retarding-voltage sweep and NPLC master timing; **P4 collector** (Keithley 2400-LV) holds collector bias while a Keithley **6485** picoammeter records collector current in lockstep (`set V → read pico`). Combined CSV columns are `Timestamp, Sweep_V, Picoammeter_I`.
+
+![LunarRego LP / EP / RPA GUI](docs/assets/readme/lunar-rego-gui.png)
+
+### Plasma-diagnostics review plots
 
 ![Langmuir Probe I–V and dI/dV](docs/assets/readme/lp-iv-didv.svg)
 
@@ -52,6 +63,31 @@ Operator GUI surfaces and plasma-diagnostics review plots. SVG mockups / regener
 ![Emissive Probe floating potential](docs/assets/readme/ep-floating-potential.svg)
 
 ![Synthetic calibration review plot](docs/assets/readme/calibration-plot.svg)
+
+## LunarRego Plasma Diagnostics (technical)
+
+LunarRego couples three classical plasma probes to a dust / regolith electric-field experiment:
+
+| Probe | What it measures | Public analysis marker |
+| --- | --- | --- |
+| **Langmuir Probe (LP)** | Collected current vs probe bias | `V*` = electron-transition peak of `dI/dV`; `V_f` = I≈0 crossing |
+| **Emissive Probe (EP)** | Floating potential vs thermionic emission | `Vp` ≈ high-emission floating-potential asymptote |
+| **RPA** | Collector current vs retarding voltage on P2 | `V*` = dominant feature of smoothed collector `dI/dV` |
+
+### Why the bias electrode matters
+
+The chamber electrode is not a diagnostic — it is the **field actuator**. Applying +V or −V sets the electric field that drives charged lunar-regolith simulant. LP / EP / RPA then quantify the plasma environment (potential scale and ion retarding structure) so lofting observations can be compared against a measured plasma reference rather than an assumed one.
+
+### RPA acquisition contract
+
+```text
+Hardware Map roles  →  P2 sweep (2410) + P4 collector (2400-LV) + 6485 picoammeter
+Lockstep            →  for each Sweep_V: set P2 → read 6485
+Combined CSV        →  Timestamp, Sweep_V, Picoammeter_I
+Other plates        →  fixed bias / own CSV only (6485 is not free-running on them)
+```
+
+Full plate map, GUI behavior, and interpretation notes: [docs/plasma_diagnostics/methodology.md](docs/plasma_diagnostics/methodology.md).
 
 ## Repository Map
 
@@ -85,6 +121,14 @@ flowchart TD
   calibration --> artifact[VersionedArtifact]
   artifact --> library[CalibrationLibrary]
   mergedCsv --> dashboard[DashboardAndAnalysis]
+  electrode[BiasElectrode_Efield] --> lofting[RegolithLofting]
+  lunarGui[LunarRegoGUI] --> lpCsv[LP_CSV]
+  lunarGui --> rpaCsv[RPA_CombinedCSV]
+  epSheet[EP_Sheet] --> ivReview[IVdIdV_Review]
+  lpCsv --> ivReview
+  rpaCsv --> ivReview
+  ivReview --> plasmaMarkers[PlasmaPotentialMarkers]
+  plasmaMarkers --> lofting
 ```
 
 ## Quick Start
@@ -190,7 +234,7 @@ The [tdklambda/](tdklambda/) folder includes approved vendor/reference PDFs for 
 Approved public CSVs only:
 
 - [examples/plasma_diagnostics/LP_07302026_140808.csv](examples/plasma_diagnostics/LP_07302026_140808.csv)
-- [examples/plasma_diagnostics/RPA_combined_07302026_172017.csv](examples/plasma_diagnostics/RPA_combined_07302026_172017.csv)
+- [examples/plasma_diagnostics/RPA_combined_07302026_170652.csv](examples/plasma_diagnostics/RPA_combined_07302026_170652.csv)
 - [examples/plasma_diagnostics/EP_PlasmaDiagnostics_exp.csv](examples/plasma_diagnostics/EP_PlasmaDiagnostics_exp.csv)
 
 Regenerated markers (see [docs/plasma_diagnostics/methodology.md](docs/plasma_diagnostics/methodology.md)):
@@ -198,8 +242,10 @@ Regenerated markers (see [docs/plasma_diagnostics/methodology.md](docs/plasma_di
 | Diagnostic | Public estimate |
 | --- | --- |
 | LP | `V* ≈ 23.6 V` from dI/dV peak; `V_f ≈ 11.5 V` at I≈0 |
-| RPA | `V* ≈ 16.6 V` on smoothed collector dI/dV (noisy trace) |
+| RPA | `V* ≈ 21.5 V` from smoothed collector dI/dV (`…170652.csv`) |
 | EP | `Vp ≈ 21.3 V` from high-emission floating-potential asymptote |
+
+RPA and EP agree to ~0.2 V on the approved public files — a useful cross-check of the plasma-potential scale.
 
 ## Public-Release Boundary
 

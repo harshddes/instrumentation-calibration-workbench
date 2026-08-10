@@ -1,7 +1,7 @@
 {
   "sources": {
     "LP": "LP_07302026_140808.csv",
-    "RPA": "RPA_combined_07302026_172017.csv",
+    "RPA": "RPA_combined_07302026_170652.csv",
     "EP": "EP_PlasmaDiagnostics_exp.csv"
   },
   "estimates": {
@@ -16,14 +16,14 @@
       "V_marked": 23.6
     },
     "RPA": {
-      "V_p_est": 16.6,
-      "I_at_Vp": -1.0936363636363622e-09,
-      "dIdV_at_Vp": 2.0554545454545492e-08,
-      "dIdV_max": 2.0554545454545492e-08,
-      "dIdV_min": -2.0045454545454434e-08,
-      "V_f_est": 7.263583815028902,
+      "V_p_est": 21.5,
+      "I_at_Vp": 3.8875727272727356e-11,
+      "dIdV_at_Vp": 2.514090909090873e-10,
+      "dIdV_max": 2.514090909090873e-10,
+      "dIdV_min": -2.2202272727271928e-10,
+      "V_f_est": 19.61619204489995,
       "n_points": 201.0,
-      "V_marked": 16.6
+      "V_marked": 21.5
     },
     "EP": {
       "grounded": {
