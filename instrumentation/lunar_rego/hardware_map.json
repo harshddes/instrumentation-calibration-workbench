@@ -1,0 +1,68 @@
+{
+  "LP": {
+    "label": "Langmuir Probe",
+    "instrument": "2410",
+    "panel": "REAR",
+    "GPIB": "1",
+    "board": 0,
+    "companion": null
+  },
+  "EP": {
+    "label": "Emissive Probe",
+    "instrument": "HP6032A",
+    "panel": "NA",
+    "GPIB": "",
+    "board": 0,
+    "companion": {
+      "instrument": "Fluke8846A",
+      "GPIB": "",
+      "board": 0
+    }
+  },
+  "RPA_P0": {
+    "label": "P0 (plate 1)",
+    "instrument": "None",
+    "panel": "NA",
+    "GPIB": "1",
+    "board": 0,
+    "companion": null
+  },
+  "RPA_P1": {
+    "label": "P1 (plate 2)",
+    "instrument": "Siglent3303",
+    "panel": "NA",
+    "GPIB": "",
+    "board": 0,
+    "companion": null,
+    "note": "ch.2"
+  },
+  "RPA_P2": {
+    "label": "P2 (plate 3)",
+    "instrument": "2410",
+    "panel": "FRONT",
+    "GPIB": "1",
+    "board": 0,
+    "companion": null
+  },
+  "RPA_P3": {
+    "label": "P3 (plate 4)",
+    "instrument": "SiglentSPD1168",
+    "panel": "FRONT",
+    "GPIB": "24",
+    "board": 1,
+    "companion": null
+  },
+  "RPA_P4": {
+    "label": "P4 Collector",
+    "instrument": "2400-LV",
+    "panel": "FRONT",
+    "GPIB": "26",
+    "board": 2,
+    "companion": {
+      "instrument": "6485",
+      "GPIB": "15",
+      "board": 2,
+      "backend_ready": true
+    }
+  }
+}

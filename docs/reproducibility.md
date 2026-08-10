@@ -27,8 +27,19 @@ The public repo intentionally keeps:
 - [tdklambda/data/](../tdklambda/data/)
 - [code_xray/](../code_xray/)
 - [SCD_3D_AI_Lab/](../SCD_3D_AI_Lab/)
+- [examples/plasma_diagnostics/](../examples/plasma_diagnostics/) — LP, EP, and RPA CSVs only
 
 These are supporting examples for a portfolio repository. Large unrelated experiment trees and private scratch folders are not included.
+
+## LunarRego Data Boundary
+
+Only these three files are approved for public release:
+
+- `LP_07302026_140808.csv`
+- `RPA_combined_07302026_172017.csv`
+- `EP_PlasmaDiagnostics_exp.csv`
+
+Other LunarRego / Keithley run folders from the private lab tree are excluded on purpose.
 
 ## Vendor Documents
 

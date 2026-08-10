@@ -10,3 +10,5 @@ demo_logs/
 *.tmp
 *.log.tmp
 tdklambda/tdkMeasure_gui.csv
+instrumentation/lunar_rego/Keithley*/csv/
+instrumentation/lunar_rego/**/smoke_*.csv

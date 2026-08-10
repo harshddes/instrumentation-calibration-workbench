@@ -34,6 +34,22 @@ python -m instrumentation.tdk.GUI_TDK
 
 The GUI defaults to [tdklambda/data/](../../tdklambda/data/) for TDK logs.
 
+## Run LunarRego LP / EP / RPA GUI
+
+```powershell
+python -m instrumentation.lunar_rego.GUI_LunarRego
+```
+
+Hardware map defaults live in [instrumentation/lunar_rego/hardware_map.json](../../instrumentation/lunar_rego/hardware_map.json). Only Keithley backends are runnable in the public package.
+
+## Regenerate Plasma-Diagnostics Plots
+
+```powershell
+python -m instrumentation.lunar_rego.analyze_iv_curves
+```
+
+Inputs are the three approved CSVs in [examples/plasma_diagnostics/](../../examples/plasma_diagnostics/). Outputs are written to [docs/assets/readme/](../assets/readme/).
+
 ## Run CSV Dashboard
 
 ```powershell

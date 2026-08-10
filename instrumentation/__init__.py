@@ -1,1 +1,1 @@
-"""Public instrumentation package for DAQ, TDK, and snapshot utilities."""
+"""Public instrumentation package for DAQ, TDK, LunarRego, and snapshot utilities."""

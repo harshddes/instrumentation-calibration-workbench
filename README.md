@@ -4,6 +4,8 @@ This public repository is a portfolio-focused research-engineering project. It d
 
 The core idea is simple: a DAQ logger records measurement channels, a power-supply logger publishes the latest telemetry snapshot, and the DAQ row records whether that telemetry was fresh, stale, or missing. A calibration package then turns raw DAQ current readings into reference-scale values using a versioned JSON artifact.
 
+Beyond the DAQ/TDK pair, the repo now also shows the LunarRego plasma-diagnostics operator GUI (LP / EP / RPA) and a public I–V review path that estimates plasma-related voltages from `dI/dV` on approved example CSVs only.
+
 ## Documentation (start here)
 
 Everything you need is in the repo as normal Markdown — click the links below (they work on GitHub and locally).
@@ -13,9 +15,10 @@ Everything you need is in the repo as normal Markdown — click the links below 
 | Documentation index | [docs/README.md](docs/README.md) |
 | Architecture and data flow | [docs/architecture/dataflow.md](docs/architecture/dataflow.md) |
 | Calibration methodology | [docs/calibration/methodology.md](docs/calibration/methodology.md) |
+| Plasma diagnostics (LP / EP / RPA) | [docs/plasma_diagnostics/methodology.md](docs/plasma_diagnostics/methodology.md) |
 | Runbooks (commands) | [docs/workflows/runbooks.md](docs/workflows/runbooks.md) |
 | Reproducibility and public boundary | [docs/reproducibility.md](docs/reproducibility.md) |
-| Synthetic examples | [examples/](examples/) |
+| Synthetic / approved examples | [examples/](examples/) |
 
 **GitHub Wiki (optional companion):** [Project Wiki](https://github.com/harshddes/instrumentation-calibration-workbench/wiki) — a shorter, reader-friendly companion to the canonical [docs/](docs/) pages.
 
@@ -26,17 +29,27 @@ Wiki source files (browse in the repo): [wiki/Home.md](wiki/Home.md) · [Archite
 - Multi-instrument logging architecture with a JSON snapshot bridge.
 - Keithley DAQ scan logic with CSV output and TDK telemetry columns.
 - TDK Lambda telemetry/control code with logging, GUI operation, and safety-oriented state handling.
+- LunarRego LP / EP / RPA operator GUI with hardware-map role assignment and Keithley backends.
+- Public I–V review for approved LP, EP, and RPA CSVs, including `dI/dV` plasma-potential markers.
 - A calibration generator that stores source hashes, cleaning rules, model coefficients, fit quality, and review plots.
 - A reusable calibration library for scripts, notebooks, and downstream analysis.
 - GUI and dashboard surfaces suitable for operator workflows and data exploration.
 
 ## Screenshots
 
-These images show the actual operator GUI surfaces used by the DAQ and TDK logging tools. SVG reference mockups are in [docs/assets/readme/](docs/assets/readme/).
+Operator GUI surfaces and plasma-diagnostics review plots. SVG mockups / regenerated plots live in [docs/assets/readme/](docs/assets/readme/).
 
 ![Keithley DAQ GUI](docs/assets/readme/daq.png)
 
 ![TDK Lambda GUI](docs/assets/readme/tdk.png)
+
+![LunarRego LP / EP / RPA GUI](docs/assets/readme/lunar-rego-gui.svg)
+
+![Langmuir Probe I–V and dI/dV](docs/assets/readme/lp-iv-didv.svg)
+
+![RPA collector I–V and dI/dV](docs/assets/readme/rpa-iv-didv.svg)
+
+![Emissive Probe floating potential](docs/assets/readme/ep-floating-potential.svg)
 
 ![Synthetic calibration review plot](docs/assets/readme/calibration-plot.svg)
 
@@ -46,10 +59,11 @@ These images show the actual operator GUI surfaces used by the DAQ and TDK loggi
 | --- | --- |
 | [instrumentation/daq/](instrumentation/daq/) | Keithley DAQ acquisition class and Tk GUI entry point. |
 | [instrumentation/tdk/](instrumentation/tdk/) | TDK Lambda telemetry/control logic and Tk GUI entry point. |
+| [instrumentation/lunar_rego/](instrumentation/lunar_rego/) | LunarRego LP / EP / RPA GUI, Keithley backends, and I–V / dI/dV review. |
 | [instrumentation/snapshot.py](instrumentation/snapshot.py) | Shared snapshot contract used to bridge TDK telemetry into DAQ rows. |
 | [tdk_snapshot.py](tdk_snapshot.py) | Compatibility copy of the snapshot helper for older examples and traces. |
 | [calibration_process/](calibration_process/) | Versioned calibration generator, runtime library, synthetic sources, and demo artifacts. |
-| [examples/](examples/) | Synthetic merged-session CSV, synthetic calibration CSV, and example snapshot JSON. |
+| [examples/](examples/) | Synthetic DAQ/TDK examples plus approved LP / EP / RPA CSVs only. |
 | [test_logging/](test_logging/) | Retained test logs approved for this public showcase. |
 | [tdklambda/data/](tdklambda/data/) | Retained TDK data/examples approved for this public showcase. |
 | [code_xray/](code_xray/) | Static/dynamic code-tracing experiment for understanding DAQ variable flow. |
@@ -109,6 +123,18 @@ Run the TDK GUI:
 python -m instrumentation.tdk.GUI_TDK
 ```
 
+Run the LunarRego LP / EP / RPA GUI:
+
+```powershell
+python -m instrumentation.lunar_rego.GUI_LunarRego
+```
+
+Regenerate plasma-diagnostics review plots from the approved public CSVs:
+
+```powershell
+python -m instrumentation.lunar_rego.analyze_iv_curves
+```
+
 Run the CSV dashboard:
 
 ```powershell
@@ -159,6 +185,22 @@ The project keeps the real-time bridge explicit. A snapshot payload contains:
 
 The [tdklambda/](tdklambda/) folder includes approved vendor/reference PDFs for VISA and TDK Lambda operation. They are included for context and remain third-party reference documents, not original project source code.
 
+## Plasma Diagnostics Demo
+
+Approved public CSVs only:
+
+- [examples/plasma_diagnostics/LP_07302026_140808.csv](examples/plasma_diagnostics/LP_07302026_140808.csv)
+- [examples/plasma_diagnostics/RPA_combined_07302026_172017.csv](examples/plasma_diagnostics/RPA_combined_07302026_172017.csv)
+- [examples/plasma_diagnostics/EP_PlasmaDiagnostics_exp.csv](examples/plasma_diagnostics/EP_PlasmaDiagnostics_exp.csv)
+
+Regenerated markers (see [docs/plasma_diagnostics/methodology.md](docs/plasma_diagnostics/methodology.md)):
+
+| Diagnostic | Public estimate |
+| --- | --- |
+| LP | `V* ≈ 23.6 V` from dI/dV peak; `V_f ≈ 11.5 V` at I≈0 |
+| RPA | `V* ≈ 16.6 V` on smoothed collector dI/dV (noisy trace) |
+| EP | `Vp ≈ 21.3 V` from high-emission floating-potential asymptote |
+
 ## Public-Release Boundary
 
-This repository is curated from a larger working lab repository. Large experiment trees, scratch folders, private editor metadata, and device-specific code outside this showcase scope are intentionally excluded. Retained support folders were kept because they help demonstrate the engineering workflow. Details: [docs/reproducibility.md](docs/reproducibility.md)
+This repository is curated from a larger working lab repository. Large experiment trees, scratch folders, private editor metadata, and device-specific code outside this showcase scope are intentionally excluded. For LunarRego, only the three approved LP / EP / RPA CSVs above are public; other experiment logs stay private. Details: [docs/reproducibility.md](docs/reproducibility.md)

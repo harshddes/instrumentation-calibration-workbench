@@ -24,6 +24,22 @@ flowchart TD
   mergedCsv --> dashboard[Dashboard]
 ```
 
+## LunarRego Diagnostics Path
+
+```mermaid
+flowchart TD
+  hwMap[HardwareMapJSON] --> gui[LunarRegoGUI]
+  gui --> lpCsv[LP_CSV]
+  gui --> rpaCsv[RPA_CombinedCSV]
+  epSheet[EP_SheetCSV] --> review[AnalyzeIVCurves]
+  lpCsv --> review
+  rpaCsv --> review
+  review --> plots[PublicReviewSVGs]
+  review --> summary[PlasmaPotentialJSON]
+```
+
+Only the approved LP / EP / RPA example CSVs are retained publicly. See [plasma diagnostics methodology](../plasma_diagnostics/methodology.md).
+
 ## Snapshot Contract
 
 [instrumentation/snapshot.py](../../instrumentation/snapshot.py) defines:

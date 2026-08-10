@@ -64,6 +64,10 @@ HV_FALLBACK_LIMITS_BY_ADDRESS: Dict[int, Dict[str, float]] = {
     2: {"voltage": 450.0, "current": 1.3},
 }
 HV_DEFAULT_FALLBACK_LIMITS: Dict[str, float] = {"voltage": 50.0, "current": 0.005}
+SWEEP_NATIVE_MAX_POINTS = 12
+SWEEP_POLL_SECONDS = 0.25
+SWEEP_ALLOWED_MODES = ("list", "wave", "fix", "software")
+SWEEP_ALLOWED_STEP_MODES = ("AUTO", "ONCE")
 
 # Fault register bit map (Questionable Condition/FLT(fault) register).
 # Memory camera, "what WAS?"
@@ -197,6 +201,219 @@ def parse_numeric_value(value: Any) -> Optional[float]:
             return float(match.group(0))
         except ValueError:
             return None
+
+
+def _normalize_sweep_mode(mode):
+    mode_normalized = str(mode or "").strip().lower()
+    aliases = {
+        "list step": "list",
+        "list": "list",
+        "step": "list",
+        "wave ramp": "wave",
+        "wave": "wave",
+        "ramp": "wave",
+        "fix trigger": "fix",
+        "fix": "fix",
+        "software custom": "software",
+        "software": "software",
+    }
+    selected = aliases.get(mode_normalized)
+    if selected not in SWEEP_ALLOWED_MODES:
+        raise ValueError(
+            f"Unsupported sweep mode '{mode}'. Use list, wave, fix, or software."
+        )
+    return selected
+
+
+def _normalize_sweep_step_mode(step_mode):
+    selected = str(step_mode or "AUTO").strip().upper()
+    if selected not in SWEEP_ALLOWED_STEP_MODES:
+        raise ValueError("Sweep step mode must be AUTO or ONCE.")
+    return selected
+
+
+def _split_sweep_recipe_line(line):
+    if "," in line:
+        return [field.strip() for field in next(csv.reader([line]))]
+    return [field.strip() for field in line.split()]
+
+
+def _is_sweep_header(fields):
+    joined = " ".join(fields).strip().lower()
+    return bool(joined and any(token in joined for token in ("address", "voltage", "current", "duration")))
+
+
+def _parse_sweep_float(field_name, raw_value, allow_blank=True):
+    token = str(raw_value or "").strip()
+    if token.lower() in {"", "none", "na", "n/a", "-"}:
+        if allow_blank:
+            return None
+        raise ValueError(f"{field_name} is required.")
+    try:
+        return float(token)
+    except ValueError as exc:
+        raise ValueError(f"{field_name} must be numeric.") from exc
+
+
+def parse_sweep_recipe_text(raw_text, default_addresses=None):
+    """Parse GUI sweep rows into address/voltage/current/duration dictionaries."""
+    default_address_list = [1] if default_addresses is None else [int(x) for x in default_addresses]
+    points: List[Dict[str, Any]] = []
+    for line_number, raw_line in enumerate(str(raw_text or "").splitlines(), start=1):
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        fields = _split_sweep_recipe_line(line)
+        if _is_sweep_header(fields):
+            continue
+
+        if len(fields) >= 4:
+            try:
+                addresses = [int(fields[0])]
+            except ValueError as exc:
+                raise ValueError(f"Line {line_number}: address must be an integer.") from exc
+            value_fields = fields[1:4]
+        elif len(fields) == 3:
+            if not default_address_list:
+                raise ValueError(
+                    f"Line {line_number}: addressed-row mode requires "
+                    "address,voltage,current,duration_s."
+                )
+            addresses = list(default_address_list)
+            value_fields = fields
+        else:
+            raise ValueError(
+                f"Line {line_number}: use voltage,current,duration_s or "
+                "address,voltage,current,duration_s."
+            )
+
+        voltage = _parse_sweep_float(f"Line {line_number} voltage", value_fields[0])
+        current = _parse_sweep_float(f"Line {line_number} current", value_fields[1])
+        duration_s = _parse_sweep_float(
+            f"Line {line_number} duration_s",
+            value_fields[2],
+            allow_blank=False,
+        )
+
+        for address in addresses:
+            points.append(
+                {
+                    "address": int(address),
+                    "voltage": voltage,
+                    "current": current,
+                    "duration_s": duration_s,
+                    "line_number": line_number,
+                }
+            )
+
+    if not points:
+        raise ValueError("Sweep recipe is empty.")
+    return points
+
+
+def normalize_sweep_points(points, mode="software"):
+    mode_normalized = _normalize_sweep_mode(mode)
+    normalized: List[Dict[str, Any]] = []
+    for index, point in enumerate(points, start=1):
+        try:
+            address = int(point.get("address"))
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"Sweep point {index}: address must be an integer.") from exc
+
+        voltage = point.get("voltage")
+        current = point.get("current")
+        duration_s = point.get("duration_s", 0.0)
+        if voltage is not None:
+            voltage = float(voltage)
+        if current is not None:
+            current = float(current)
+        if voltage is None and current is None:
+            raise ValueError(f"Sweep point {index}: voltage or current is required.")
+
+        duration_s = 0.0 if duration_s is None else float(duration_s)
+        if mode_normalized != "fix" and duration_s <= 0:
+            raise ValueError(f"Sweep point {index}: duration_s must be greater than zero.")
+        if mode_normalized == "fix" and duration_s < 0:
+            raise ValueError(f"Sweep point {index}: duration_s cannot be negative.")
+
+        normalized.append(
+            {
+                "address": address,
+                "voltage": voltage,
+                "current": current,
+                "duration_s": duration_s,
+            }
+        )
+    return normalized
+
+
+def _group_sweep_points_by_address(points):
+    grouped: Dict[int, List[Dict[str, Any]]] = {}
+    for point in points:
+        grouped.setdefault(int(point["address"]), []).append(point)
+    return grouped
+
+
+def _non_null_values(rows, key):
+    return [row[key] for row in rows if row.get(key) is not None]
+
+
+def _unique_float_values(values):
+    return sorted({round(float(value), 12) for value in values})
+
+
+def _select_wave_axis(rows):
+    voltage_values = _non_null_values(rows, "voltage")
+    current_values = _non_null_values(rows, "current")
+    voltage_unique = _unique_float_values(voltage_values)
+    current_unique = _unique_float_values(current_values)
+    voltage_changes = len(voltage_unique) > 1
+    current_changes = len(current_unique) > 1
+    if voltage_changes and current_changes:
+        raise ValueError("WAVE mode can ramp voltage or current, but not both at once.")
+    if voltage_values and not current_changes:
+        return "voltage"
+    if current_values:
+        return "current"
+    raise ValueError("WAVE mode requires voltage or current points.")
+
+
+def sweep_native_possible(mode, points):
+    mode_normalized = _normalize_sweep_mode(mode)
+    if mode_normalized == "software":
+        return False
+    grouped = _group_sweep_points_by_address(points)
+    for rows in grouped.values():
+        if len(rows) > SWEEP_NATIVE_MAX_POINTS:
+            return False
+        if mode_normalized == "fix" and len(rows) != 1:
+            return False
+        if mode_normalized == "list":
+            voltage_values = _non_null_values(rows, "voltage")
+            current_values = _non_null_values(rows, "current")
+            if voltage_values and len(voltage_values) != len(rows):
+                return False
+            if current_values and len(current_values) != len(rows):
+                return False
+        if mode_normalized == "wave":
+            wave_axis = _select_wave_axis(rows)
+            wave_values = _non_null_values(rows, wave_axis)
+            if len(wave_values) != len(rows):
+                return False
+    return True
+
+
+def summarize_sweep_plan(mode, points, native_preferred=True):
+    mode_normalized = _normalize_sweep_mode(mode)
+    normalized = normalize_sweep_points(points, mode_normalized)
+    grouped = _group_sweep_points_by_address(normalized)
+    address_parts = [
+        f"PS{address}: {len(rows)} point(s)"
+        for address, rows in sorted(grouped.items())
+    ]
+    native_ready = native_preferred and sweep_native_possible(mode_normalized, normalized)
+    engine = "native TDK" if native_ready else "software"
+    return f"{mode_normalized.upper()} sweep using {engine}; " + ", ".join(address_parts)
 
 
 class TDKLambda:
@@ -583,6 +800,107 @@ class TDKLambda:
     def set_current(self, address: int, current: float) -> None:
         self._select_and_verify_address(address)
         self.psu.write(f"SOURce:CURRent:LEVel {current}")
+
+    @staticmethod
+    def _format_sweep_values(values):
+        return ",".join(f"{float(value):.9g}" for value in values)
+
+    def abort_program(self, address=None):
+        if address is not None:
+            self._select_and_verify_address(address)
+        self.psu.write("ABORt")
+        self.psu.write("INITiate:CONTinuous OFF")
+
+    def configure_list_sweep(
+        self,
+        address,
+        points,
+        repeat_count=1,
+        step_mode="AUTO",
+    ):
+        rows = normalize_sweep_points(points, mode="list")
+        if len(rows) > SWEEP_NATIVE_MAX_POINTS:
+            raise ValueError(f"Native LIST mode supports up to {SWEEP_NATIVE_MAX_POINTS} points.")
+
+        voltage_values = _non_null_values(rows, "voltage")
+        current_values = _non_null_values(rows, "current")
+        dwell_values = [float(row["duration_s"]) for row in rows]
+        if voltage_values and len(voltage_values) != len(rows):
+            raise ValueError("Native LIST voltage rows cannot contain blanks.")
+        if current_values and len(current_values) != len(rows):
+            raise ValueError("Native LIST current rows cannot contain blanks.")
+        self._select_and_verify_address(address)
+        self.abort_program()
+        self.psu.write("TRIGger:SOURce BUS")
+        self.psu.write("VOLTage:MODE NONE")
+        self.psu.write("CURRent:MODE NONE")
+        if voltage_values:
+            self.psu.write("VOLTage:MODE LIST")
+            self.psu.write(f"LIST:VOLTage {self._format_sweep_values(voltage_values)}")
+        if current_values:
+            self.psu.write("CURRent:MODE LIST")
+            self.psu.write(f"LIST:CURRent {self._format_sweep_values(current_values)}")
+        self.psu.write(f"LIST:DWELl {self._format_sweep_values(dwell_values)}")
+        self.psu.write(f"LIST:COUNt {int(repeat_count)}")
+        self.psu.write(f"LIST:STEP {_normalize_sweep_step_mode(step_mode)}")
+
+    def configure_wave_sweep(
+        self,
+        address,
+        points,
+        repeat_count=1,
+        step_mode="AUTO",
+    ):
+        rows = normalize_sweep_points(points, mode="wave")
+        if len(rows) > SWEEP_NATIVE_MAX_POINTS:
+            raise ValueError(f"Native WAVE mode supports up to {SWEEP_NATIVE_MAX_POINTS} points.")
+
+        wave_axis = _select_wave_axis(rows)
+        voltage_values = _non_null_values(rows, "voltage")
+        current_values = _non_null_values(rows, "current")
+        time_values = [float(row["duration_s"]) for row in rows]
+        if len(_non_null_values(rows, wave_axis)) != len(rows):
+            raise ValueError(f"Native WAVE {wave_axis} rows cannot contain blanks.")
+        self._select_and_verify_address(address)
+        self.abort_program()
+        self.psu.write("TRIGger:SOURce BUS")
+        self.psu.write("VOLTage:MODE NONE")
+        self.psu.write("CURRent:MODE NONE")
+        if wave_axis == "voltage":
+            if current_values:
+                self.set_current(address=address, current=current_values[0])
+            self._select_and_verify_address(address)
+            self.psu.write("VOLTage:MODE WAVE")
+            self.psu.write(f"WAVE:VOLTage {self._format_sweep_values(voltage_values)}")
+        else:
+            if voltage_values:
+                self.set_voltage(address=address, voltage=voltage_values[0])
+            self._select_and_verify_address(address)
+            self.psu.write("CURRent:MODE WAVE")
+            self.psu.write(f"WAVE:CURRent {self._format_sweep_values(current_values)}")
+        self.psu.write(f"WAVE:TIME {self._format_sweep_values(time_values)}")
+        self.psu.write(f"WAVE:COUNt {int(repeat_count)}")
+        self.psu.write(f"WAVE:STEP {_normalize_sweep_step_mode(step_mode)}")
+
+    def configure_fix_trigger(self, address, point):
+        rows = normalize_sweep_points([point], mode="fix")
+        selected = rows[0]
+        self._select_and_verify_address(address)
+        self.abort_program()
+        self.psu.write("TRIGger:SOURce BUS")
+        self.psu.write("VOLTage:MODE NONE")
+        self.psu.write("CURRent:MODE NONE")
+        if selected.get("voltage") is not None:
+            self.psu.write("VOLTage:MODE FIX")
+            self.psu.write(f"VOLTage:TRIGger {float(selected['voltage']):.9g}")
+        if selected.get("current") is not None:
+            self.psu.write("CURRent:MODE FIX")
+            self.psu.write(f"CURRent:TRIGger {float(selected['current']):.9g}")
+
+    def trigger_program(self, address):
+        self._select_and_verify_address(address)
+        self.psu.write("INITiate")
+        self.psu.write("*TRG")
 
     def _query_first_float(self, commands: Iterable[str]) -> Optional[float]:
         for command in commands:
@@ -1170,6 +1488,265 @@ def _safe_hv_shutdown(
             )
         except Exception:
             pass
+
+
+def _emit_sweep_status(status_callback, message):
+    if status_callback is None:
+        return
+    try:
+        status_callback(message)
+    except Exception:
+        pass
+
+
+def _estimate_sweep_duration(points, repeat_count):
+    grouped = _group_sweep_points_by_address(points)
+    longest = 0.0
+    for rows in grouped.values():
+        longest = max(longest, sum(float(row["duration_s"]) for row in rows))
+    return longest * max(int(repeat_count), 1)
+
+
+def _evaluate_sweep_fault(row, supplies, hv_mode, voltage_windows, condition_since):
+    reason = None
+    if hv_mode:
+        reason = _evaluate_hv_trip(
+            row=row,
+            supplies=supplies,
+            timestamp=float(row.get("timestamp") or time.time()),
+            voltage_windows=voltage_windows,
+            condition_since=condition_since,
+        )
+    if reason is None:
+        reason = _evaluate_runtime_fault(row=row, supplies=supplies)
+    return reason
+
+
+def _monitor_sweep_window(
+    tdk,
+    supplies,
+    duration_s,
+    stop_event,
+    hv_mode,
+    io_lock,
+    status_callback,
+    label,
+):
+    voltage_windows: Dict[int, List[Tuple[float, float]]] = {}
+    condition_since: Dict[Tuple[int, str], float] = {}
+    for supply in supplies:
+        voltage_windows[int(supply["address"])] = []
+
+    end_time = time.time() + max(float(duration_s), 0.0)
+    while time.time() < end_time:
+        if _stop_requested(stop_event):
+            return
+        row = _run_with_io_lock(
+            io_lock,
+            lambda: tdk.measure_all_supplies(
+                supplies=supplies,
+                timestamp=time.time(),
+                full_diagnostics=True,
+                control_request_event=None,
+            ),
+        )
+        reason = _evaluate_sweep_fault(
+            row=row,
+            supplies=supplies,
+            hv_mode=hv_mode,
+            voltage_windows=voltage_windows,
+            condition_since=condition_since,
+        )
+        if reason:
+            raise RuntimeError(reason)
+        _emit_sweep_status(status_callback, f"{label}: monitoring sweep.")
+        _sleep_with_stop(min(SWEEP_POLL_SECONDS, end_time - time.time()), stop_event)
+
+
+def _validate_sweep_against_limits(tdk, points, io_lock):
+    grouped = _group_sweep_points_by_address(points)
+    for address, rows in grouped.items():
+        voltage_limit = _run_with_io_lock(
+            io_lock,
+            lambda address=address: tdk.get_voltage_limit_max(address),
+        )
+        current_limit = _run_with_io_lock(
+            io_lock,
+            lambda address=address: tdk.get_current_limit_max(address),
+        )
+        for index, row in enumerate(rows, start=1):
+            voltage = row.get("voltage")
+            current = row.get("current")
+            if voltage is not None and float(voltage) > float(voltage_limit):
+                raise ValueError(
+                    f"PS{address} sweep point {index} voltage {float(voltage):.3f} V "
+                    f"exceeds limit {float(voltage_limit):.3f} V."
+                )
+            if current is not None and float(current) > float(current_limit):
+                raise ValueError(
+                    f"PS{address} sweep point {index} current {float(current):.6f} A "
+                    f"exceeds limit {float(current_limit):.6f} A."
+                )
+
+
+def _configure_native_sweep(tdk, mode, grouped, repeat_count, step_mode):
+    for address, rows in sorted(grouped.items()):
+        if mode == "list":
+            tdk.configure_list_sweep(
+                address=address,
+                points=rows,
+                repeat_count=repeat_count,
+                step_mode=step_mode,
+            )
+        elif mode == "wave":
+            tdk.configure_wave_sweep(
+                address=address,
+                points=rows,
+                repeat_count=repeat_count,
+                step_mode=step_mode,
+            )
+        else:
+            tdk.configure_fix_trigger(address=address, point=rows[0])
+
+
+def _safe_abort_sweep(tdk, addresses, io_lock):
+    for address in sorted(set(addresses)):
+        try:
+            _run_with_io_lock(
+                io_lock,
+                lambda address=address: tdk.abort_program(address=address),
+            )
+        except Exception:
+            pass
+    try:
+        _run_with_io_lock(io_lock, tdk.global_off)
+    except Exception:
+        pass
+    for address in sorted(set(addresses)):
+        try:
+            _run_with_io_lock(
+                io_lock,
+                lambda address=address: tdk.turn_off(address=address),
+            )
+        except Exception:
+            pass
+
+
+def run_sweep_sequence(
+    tdk,
+    points,
+    mode="list",
+    repeat_count=1,
+    step_mode="AUTO",
+    stop_event=None,
+    hv_mode=False,
+    io_lock=None,
+    status_callback=None,
+    native_preferred=True,
+    turn_outputs=True,
+):
+    mode_normalized = _normalize_sweep_mode(mode)
+    step_mode_normalized = _normalize_sweep_step_mode(step_mode)
+    repeat_count = int(repeat_count)
+    if repeat_count < 1:
+        raise ValueError("repeat_count must be >= 1.")
+
+    normalized = normalize_sweep_points(points, mode=mode_normalized)
+    _validate_sweep_against_limits(tdk=tdk, points=normalized, io_lock=io_lock)
+    grouped = _group_sweep_points_by_address(normalized)
+    addresses = sorted(grouped)
+    supplies = [{"address": address, "idn": ""} for address in addresses]
+    native_ready = (
+        native_preferred
+        and mode_normalized != "software"
+        and sweep_native_possible(mode_normalized, normalized)
+    )
+    engine = "native" if native_ready else "software"
+
+    try:
+        if native_ready:
+            _emit_sweep_status(status_callback, f"Configuring native {mode_normalized.upper()} sweep.")
+            _run_with_io_lock(
+                io_lock,
+                lambda: _configure_native_sweep(
+                    tdk=tdk,
+                    mode=mode_normalized,
+                    grouped=grouped,
+                    repeat_count=repeat_count,
+                    step_mode=step_mode_normalized,
+                ),
+            )
+            if turn_outputs:
+                for address in addresses:
+                    _run_with_io_lock(
+                        io_lock,
+                        lambda address=address: tdk.turn_on(address=address),
+                    )
+                _run_with_io_lock(io_lock, tdk.global_on)
+            for address in addresses:
+                _run_with_io_lock(
+                    io_lock,
+                    lambda address=address: tdk.trigger_program(address=address),
+                )
+            monitor_duration = (
+                max(SWEEP_POLL_SECONDS, _estimate_sweep_duration(normalized, repeat_count))
+                if step_mode_normalized == "AUTO"
+                else SWEEP_POLL_SECONDS
+            )
+            _monitor_sweep_window(
+                tdk=tdk,
+                supplies=supplies,
+                duration_s=monitor_duration + SWEEP_POLL_SECONDS,
+                stop_event=stop_event,
+                hv_mode=hv_mode,
+                io_lock=io_lock,
+                status_callback=status_callback,
+                label=f"Native {mode_normalized.upper()}",
+            )
+        else:
+            _emit_sweep_status(status_callback, "Running software sweep.")
+            for repeat_index in range(repeat_count):
+                for point_index, point in enumerate(normalized, start=1):
+                    if _stop_requested(stop_event):
+                        break
+                    address = int(point["address"])
+
+                    def apply_point(point=point, address=address):
+                        if point.get("current") is not None:
+                            tdk.set_current(address=address, current=point["current"])
+                        if point.get("voltage") is not None:
+                            tdk.set_voltage(address=address, voltage=point["voltage"])
+                        if turn_outputs:
+                            tdk.turn_on(address=address)
+
+                    _run_with_io_lock(io_lock, apply_point)
+                    if turn_outputs:
+                        _run_with_io_lock(io_lock, tdk.global_on)
+                    _emit_sweep_status(
+                        status_callback,
+                        (
+                            f"Software sweep repeat {repeat_index + 1}/{repeat_count}, "
+                            f"point {point_index}/{len(normalized)}."
+                        ),
+                    )
+                    _monitor_sweep_window(
+                        tdk=tdk,
+                        supplies=supplies,
+                        duration_s=float(point["duration_s"]),
+                        stop_event=stop_event,
+                        hv_mode=hv_mode,
+                        io_lock=io_lock,
+                        status_callback=None,
+                        label="Software",
+                    )
+        return {
+            "engine": engine,
+            "mode": mode_normalized,
+            "addresses": addresses,
+            "stopped": _stop_requested(stop_event),
+        }
+    finally:
+        _safe_abort_sweep(tdk=tdk, addresses=addresses, io_lock=io_lock)
 
 
 def run_logging_session(
