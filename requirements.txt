@@ -4,7 +4,9 @@ pandas
 plotly
 pymeasure
 pyvisa
+reportlab
 requests
 scipy
 seaborn
 streamlit
+svglib

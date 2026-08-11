@@ -4,7 +4,15 @@
 
 ## Experiment context
 
-LunarRego studies charged lunar-regolith-simulant behavior under controlled electric fields inside a vacuum chamber. A bias electrode (visible in the chamber photo on the README) is driven positive or negative to set the desired field. Plasma diagnostics characterize the local plasma so lofting / charging observations can be interpreted against measured plasma potential and ion-energy structure.
+LunarRego studies charged lunar-regolith-simulant behavior under controlled electric fields inside a vacuum chamber. A bias electrode (visible in the chamber photo on the README) is driven positive or negative to set the desired field. Plasma diagnostics characterize the local plasma so lofting / charging observations can be interpreted against measured plasma conditions and ion-retarding structure.
+
+## Vacuum system status (current)
+
+The chamber vacuum train is a **roughing pump + CTI cryopump** combination.
+
+- There is currently a **roughing-pump problem**, and the team is **troubleshooting the vacuum system**.
+- Additional diagnostic runs (including fuller RPA results) are planned once vacuum is stable.
+- In parallel, work is underway to **automate the automatic valve controller (AVC)** for the roughing / cryopump sequence.
 
 ## Instruments
 
@@ -36,7 +44,7 @@ In this setup:
 - Combined public CSV columns: `Timestamp, Sweep_V, Picoammeter_I`
 - Non-sweep plates can hold fixed voltages and write their own CSVs; they do not free-run the 6485
 
-`dI/dV` of the collector-vs-retarding curve marks the characteristic retarding edge / ion-energy feature used as the public RPA `V*` estimate.
+Public RPA `dI/dV` review is **rudimentary only**. Do **not** call the early RPA feature voltage a plasma potential. It documents the acquisition / analysis pipeline while vacuum troubleshooting and AVC automation continue.
 
 ## Operator GUI
 

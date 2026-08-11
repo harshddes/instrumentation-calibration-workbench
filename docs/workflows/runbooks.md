@@ -50,6 +50,14 @@ python -m instrumentation.lunar_rego.analyze_iv_curves
 
 Inputs are the three approved CSVs in [examples/plasma_diagnostics/](../../examples/plasma_diagnostics/). Outputs are written to [docs/assets/readme/](../assets/readme/).
 
+## Regenerate Portfolio Showcase PDF
+
+```powershell
+python docs/generate_showcase_pdf.py
+```
+
+Writes [docs/Instrumentation_Calibration_Workbench_Showcase.pdf](../Instrumentation_Calibration_Workbench_Showcase.pdf) with clickable GitHub links, GUI/chamber photos, and review plots.
+
 ## Run CSV Dashboard
 
 ```powershell

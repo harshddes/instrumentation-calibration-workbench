@@ -5,6 +5,7 @@ This documentation explains the public showcase version of the instrumentation a
 ## Reading Order
 
 1. [Repository overview](../README.md) — portfolio-facing overview.
+1b. [Portfolio showcase PDF](Instrumentation_Calibration_Workbench_Showcase.pdf) — clickable multi-page PDF (`python docs/generate_showcase_pdf.py`).
 2. [Architecture and data flow](architecture/dataflow.md) — DAQ, TDK, snapshot, and CSV data flow.
 3. [Calibration methodology](calibration/methodology.md) — synthetic calibration artifact workflow.
 4. [Plasma diagnostics methodology](plasma_diagnostics/methodology.md) — LP / EP / RPA GUI and dI/dV review.

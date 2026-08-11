@@ -15,4 +15,4 @@ The repository README includes public-facing visuals:
 
 Images live under [docs/assets/readme/](https://github.com/harshddes/instrumentation-calibration-workbench/tree/main/docs/assets/readme).
 
-Technical context for the chamber electrode, RPA plate roles, and plasma markers: [Plasma Diagnostics](PlasmaDiagnostics.md).
+Technical context for the chamber electrode, RPA plate roles, LP/EP plasma markers, rudimentary RPA results, and vacuum / AVC status: [Plasma Diagnostics](PlasmaDiagnostics.md).

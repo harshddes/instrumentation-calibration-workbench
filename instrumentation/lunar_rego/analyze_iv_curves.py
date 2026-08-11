@@ -300,7 +300,7 @@ def run_analysis(
     rpa_stats = _plot_iv_didv(
         rpa["Sweep_V"].to_numpy(),
         rpa["Picoammeter_I"].to_numpy(),
-        title="RPA collector (combined)",
+        title="RPA collector (rudimentary; not Vp)",
         out_path=out_dir / "rpa-iv-didv.svg",
         ylabel_i="Collector current (A)",
         smooth_points=11,

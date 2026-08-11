@@ -38,7 +38,10 @@ flowchart TD
   review --> summary[PlasmaPotentialJSON]
 ```
 
-Only the approved LP / EP / RPA example CSVs are retained publicly. See [plasma diagnostics methodology](../plasma_diagnostics/methodology.md).
+Only the approved LP / EP / RPA example CSVs are retained publicly. RPA public
+review is rudimentary (not plasma potential) while vacuum troubleshooting
+(roughing pump + CTI cryopump) and AVC automation continue. See
+[plasma diagnostics methodology](../plasma_diagnostics/methodology.md).
 
 ## Snapshot Contract
 

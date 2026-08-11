@@ -17,10 +17,26 @@ the local plasma state measured by:
 | --- | --- |
 | Langmuir Probe (LP) | Local electron/ion current collection; floating and plasma-potential markers |
 | Emissive Probe (EP) | Independent plasma-potential estimate via high-emission floating potential |
-| Retarding Potential Analyzer (RPA) | Ion energy / retarding-edge structure at the collector |
+| Retarding Potential Analyzer (RPA) | Ion retarding / collector I–V structure (early pipeline results only) |
 
 The public repository retains only the approved LP, EP, and RPA example CSVs
 plus the operator GUI / analysis code. Other private run trees are excluded.
+
+## Vacuum system status (current)
+
+The chamber vacuum train uses a **roughing pump combined with a CTI cryopump**.
+At the time of this public write-up:
+
+- There is an active **roughing-pump problem**, and the team is
+  **troubleshooting the vacuum system**.
+- Additional diagnostic campaigns (including fuller RPA results) are planned
+  once vacuum performance is restored.
+- In parallel, work is underway to **automate the automatic valve controller
+  (AVC)** that sequences the roughing / cryopump path.
+
+Until the vacuum system is healthy again, treat the public RPA file as a
+**rudimentary early result** that demonstrates acquisition + `dI/dV` review —
+**not** as a finalized plasma-potential measurement.
 
 ## Hardware roles (RPA)
 
@@ -80,9 +96,9 @@ Shared pipeline:
 2. Sort by voltage; average duplicate voltages.
 3. Optionally smooth current (RPA).
 4. Compute `dI/dV` with a central difference.
-5. Mark `V*` at the dominant derivative feature (edge samples trimmed).
-6. For LP, also mark floating potential `V_f` at the I≈0 crossing.
-7. For EP, prefer the high-emission floating-potential asymptote as `Vp`.
+5. For LP / EP, mark plasma-potential-related features as described below.
+6. For RPA, report only a rudimentary collector `dI/dV` feature voltage — do
+   **not** label it plasma potential in public materials.
 
 ### Physics interpretation
 
@@ -105,18 +121,18 @@ Shared pipeline:
 
 - Ions must overcome the retarding barrier on P2 to reach the collector.
 - Collector current vs `Sweep_V` encodes the transmitted ion population.
-- The public `V*` is the dominant feature of smoothed `|dI/dV|` on that curve
-  (characteristic retarding-edge / ion-energy marker for the retained sweep).
+- The public review plot shows a **rudimentary** smoothed `|dI/dV|` feature on
+  the approved early sweep. That feature voltage is retained only to document
+  the pipeline. **It is not reported as plasma potential.** Fuller RPA results
+  are planned after vacuum troubleshooting (roughing pump + CTI cryopump) and
+  AVC automation progress.
 
 ### Latest regenerated estimates
 
 | Diagnostic | Estimate | Notes |
 | --- | --- | --- |
 | LP | `V* ≈ 23.6 V`, `V_f ≈ 11.5 V` | Electron-transition peak of dI/dV; sweep still rising near 30 V |
-| RPA | `V* ≈ 21.5 V` | From `RPA_combined_07302026_170652.csv` (approved collector sweep) |
 | EP | `Vp ≈ 21.3 V` | High-emission floating-potential asymptote |
-
-RPA and EP markers agree to ~0.2 V on the approved public files — a useful
-cross-check that the diagnostics are seeing a consistent plasma-potential scale.
+| RPA | Rudimentary dI/dV feature ≈ 21.5 V | Early collector sweep only — **not** plasma potential; more runs planned |
 
 Review SVGs and JSON summary live under [docs/assets/readme/](../assets/readme/).

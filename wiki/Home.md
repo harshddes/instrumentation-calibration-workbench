@@ -14,4 +14,4 @@ This wiki is the portfolio-friendly companion to the repository docs. The projec
 
 ## LunarRego in one paragraph
 
-A bias electrode in the vacuum chamber is driven +/− to set the electric field for lunar-regolith-simulant lofting. LP, EP, and RPA quantify the plasma so lofting can be compared against measured plasma potential / ion-retarding structure. Details: [Plasma Diagnostics](PlasmaDiagnostics.md).
+A bias electrode in the vacuum chamber is driven +/− to set the electric field for lunar-regolith-simulant lofting. LP and EP provide plasma-potential markers; early RPA collector sweeps are retained as rudimentary pipeline results (not plasma potential) while the vacuum system is troubleshot. The chamber uses a roughing pump + CTI cryopump, and AVC automation is in progress. Details: [Plasma Diagnostics](PlasmaDiagnostics.md).

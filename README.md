@@ -6,6 +6,18 @@ The core idea is simple: a DAQ logger records measurement channels, a power-supp
 
 Beyond the DAQ/TDK pair, the repo also shows the **LunarRego plasma-diagnostics** operator path: Langmuir Probe (LP), Emissive Probe (EP), and Retarding Potential Analyzer (RPA), plus a public I–V / `dI/dV` review on approved example CSVs only.
 
+## Portfolio PDF
+
+A clickable multi-page showcase PDF (overview, architecture, GUIs, chamber electrode, LP/EP/RPA results, calibration, and repository links):
+
+[docs/Instrumentation_Calibration_Workbench_Showcase.pdf](docs/Instrumentation_Calibration_Workbench_Showcase.pdf)
+
+Regenerate after content updates:
+
+```powershell
+python docs/generate_showcase_pdf.py
+```
+
 ## Documentation (start here)
 
 Everything you need is in the repo as normal Markdown — click the links below (they work on GitHub and locally).
@@ -31,7 +43,7 @@ Wiki source files (browse in the repo): [wiki/Home.md](wiki/Home.md) · [Archite
 - TDK Lambda telemetry/control code with logging, GUI operation, and safety-oriented state handling.
 - LunarRego LP / EP / RPA operator GUI with hardware-map role assignment and Keithley backends.
 - Vacuum-chamber plasma diagnostics tied to a bias electrode used for lunar-regolith-simulant lofting studies.
-- Public I–V review for approved LP, EP, and RPA CSVs, including `dI/dV` plasma-potential markers.
+- Public I–V review for approved LP / EP / RPA CSVs (LP/EP plasma-potential markers; RPA shown as rudimentary collector dI/dV only).
 - A calibration generator that stores source hashes, cleaning rules, model coefficients, fit quality, and review plots.
 - A reusable calibration library for scripts, notebooks, and downstream analysis.
 - GUI and dashboard surfaces suitable for operator workflows and data exploration.
@@ -72,11 +84,17 @@ LunarRego couples three classical plasma probes to a dust / regolith electric-fi
 | --- | --- | --- |
 | **Langmuir Probe (LP)** | Collected current vs probe bias | `V*` = electron-transition peak of `dI/dV`; `V_f` = I≈0 crossing |
 | **Emissive Probe (EP)** | Floating potential vs thermionic emission | `Vp` ≈ high-emission floating-potential asymptote |
-| **RPA** | Collector current vs retarding voltage on P2 | `V*` = dominant feature of smoothed collector `dI/dV` |
+| **RPA** | Collector current vs retarding voltage on P2 | Rudimentary `dI/dV` feature only — **not** reported as plasma potential |
 
 ### Why the bias electrode matters
 
-The chamber electrode is not a diagnostic — it is the **field actuator**. Applying +V or −V sets the electric field that drives charged lunar-regolith simulant. LP / EP / RPA then quantify the plasma environment (potential scale and ion retarding structure) so lofting observations can be compared against a measured plasma reference rather than an assumed one.
+The chamber electrode is not a diagnostic — it is the **field actuator**. Applying +V or −V sets the electric field that drives charged lunar-regolith simulant. LP / EP (and, with fuller campaigns, RPA) quantify the plasma environment so lofting observations can be compared against measured plasma references rather than assumed ones.
+
+### Vacuum system status (current)
+
+The chamber vacuum train is a **roughing pump + CTI cryopump** combination. Right now there is a problem with the **roughing pump**, so the team is **troubleshooting the vacuum system** while preparing for additional diagnostic runs. In parallel, work is underway to **automate the automatic valve controller (AVC)** that sequences the roughing / cryopump path.
+
+Until vacuum is stable again, the public RPA traces should be read as **rudimentary early results** from the acquisition / analysis pipeline — not as finalized plasma-potential values. More RPA (and related) results are planned once the vacuum system is healthy and AVC automation is in place.
 
 ### RPA acquisition contract
 
@@ -127,8 +145,11 @@ flowchart TD
   epSheet[EP_Sheet] --> ivReview[IVdIdV_Review]
   lpCsv --> ivReview
   rpaCsv --> ivReview
-  ivReview --> plasmaMarkers[PlasmaPotentialMarkers]
-  plasmaMarkers --> lofting
+  ivReview --> lpEpMarkers[LP_EP_PlasmaMarkers]
+  ivReview --> rpaEarly[RPA_RudimentaryOnly]
+  lpEpMarkers --> lofting
+  vacuum[RoughingPlusCTICryopump] --> troubleshooting[RoughingPumpTroubleshoot]
+  avc[AVC_AutomationInProgress] --> vacuum
 ```
 
 ## Quick Start
@@ -239,13 +260,13 @@ Approved public CSVs only:
 
 Regenerated markers (see [docs/plasma_diagnostics/methodology.md](docs/plasma_diagnostics/methodology.md)):
 
-| Diagnostic | Public estimate |
+| Diagnostic | Public estimate / note |
 | --- | --- |
 | LP | `V* ≈ 23.6 V` from dI/dV peak; `V_f ≈ 11.5 V` at I≈0 |
-| RPA | `V* ≈ 21.5 V` from smoothed collector dI/dV (`…170652.csv`) |
 | EP | `Vp ≈ 21.3 V` from high-emission floating-potential asymptote |
+| RPA | Rudimentary collector `dI/dV` feature ≈ 21.5 V on `…170652.csv` — **not** claimed as plasma potential; more runs planned after vacuum troubleshooting |
 
-RPA and EP agree to ~0.2 V on the approved public files — a useful cross-check of the plasma-potential scale.
+**Status:** vacuum system (roughing pump + CTI cryopump) is under troubleshooting due to a roughing-pump issue; AVC automation is in progress for future automated pump-down sequences.
 
 ## Public-Release Boundary
 
